@@ -83,7 +83,7 @@ func (a *App) initServiceProvider(_ context.Context) error {
 	return nil
 }
 
-func (a *App) initHTTPServer(ctx context.Context) error {
+func (a *App) initHTTPServer(_ context.Context) error {
 	mux := http.NewServeMux()
 
 	a.httpServer = &http.Server{
