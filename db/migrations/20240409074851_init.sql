@@ -1,5 +1,12 @@
 -- +goose Up
 -- +goose StatementBegin
+CREATE TABLE IF NOT EXISTS users (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS banners (
     banner_id BIGSERIAL PRIMARY KEY,
     selected_revision_id BIGINT NULL
@@ -39,5 +46,9 @@ CREATE TABLE IF NOT EXISTS selected_revisions (
 
 -- +goose Down
 -- +goose StatementBegin
-SELECT 'down SQL query';
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS banners;
+DROP TABLE IF EXISTS banner_revisions;
+DROP TABLE IF EXISTS banner_revision_tags;
+DROP TABLE IF EXISTS selected_revisions;
 -- +goose StatementEnd

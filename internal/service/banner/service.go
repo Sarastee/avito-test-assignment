@@ -16,7 +16,7 @@ type Service struct {
 	bannerRepo repository.BannerRepository
 }
 
-// NewService function which get new Service instance
+// NewService function which get new Banner Service instance
 func NewService(logger *zerolog.Logger, txManager db.TxManager, bannerRepository repository.BannerRepository) *Service {
 	return &Service{
 		logger:     logger,
