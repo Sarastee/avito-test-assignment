@@ -6,34 +6,43 @@ import (
 	"os"
 
 	"github.com/rs/zerolog"
+	"github.com/sarastee/avito-test-assignment/internal/api/auth"
 	"github.com/sarastee/avito-test-assignment/internal/api/banner"
 	"github.com/sarastee/avito-test-assignment/internal/config"
 	"github.com/sarastee/avito-test-assignment/internal/config/env"
 	"github.com/sarastee/avito-test-assignment/internal/repository"
+	authRepository "github.com/sarastee/avito-test-assignment/internal/repository/auth"
 	bannerRepository "github.com/sarastee/avito-test-assignment/internal/repository/banner"
 	"github.com/sarastee/avito-test-assignment/internal/service"
+	authService "github.com/sarastee/avito-test-assignment/internal/service/auth"
 	bannerService "github.com/sarastee/avito-test-assignment/internal/service/banner"
+	jwtService "github.com/sarastee/avito-test-assignment/internal/service/jwt"
+	"github.com/sarastee/avito-test-assignment/internal/utils/password"
 	"github.com/sarastee/platform_common/pkg/closer"
 	"github.com/sarastee/platform_common/pkg/db"
 	"github.com/sarastee/platform_common/pkg/db/pg"
 )
 
 type serviceProvider struct {
-	logger     *zerolog.Logger
-	pgConfig   *config.PgConfig
-	httpConfig *config.HTTPConfig
+	logger         *zerolog.Logger
+	passManager    *password.Manager
+	pgConfig       *config.PgConfig
+	httpConfig     *config.HTTPConfig
+	passwordConfig *config.PasswordConfig
+	jwtConfig      *config.JWTConfig
 
 	dbClient  db.Client
 	txManager db.TxManager
 
 	bannerRepo repository.BannerRepository
-	// authRepo
+	authRepo   repository.AuthRepository
 
 	bannerService service.BannerService
-	// authService
+	authService   service.AuthService
+	jwtService    service.JWTService
 
 	bannerImpl *banner.Implementation
-	// authImpl
+	authImpl   *auth.Implementation
 }
 
 func newServiceProvider() *serviceProvider {
@@ -94,6 +103,34 @@ func (s *serviceProvider) HTTPConfig() *config.HTTPConfig {
 	return s.httpConfig
 }
 
+func (s *serviceProvider) PasswordConfig() *config.PasswordConfig {
+	if s.passwordConfig == nil {
+		cfgSearcher := env.NewPasswordConfigSearcher()
+		cfg, err := cfgSearcher.Get()
+		if err != nil {
+			log.Fatalf("unable to get Password config: %s", err.Error())
+		}
+
+		s.passwordConfig = cfg
+	}
+
+	return s.passwordConfig
+}
+
+func (s *serviceProvider) JWTConfig() *config.JWTConfig {
+	if s.jwtConfig == nil {
+		cfgSearcher := env.NewJWTConfigSearcher()
+		cfg, err := cfgSearcher.Get()
+		if err != nil {
+			log.Fatalf("unable to get JWT config: %s", err.Error())
+		}
+
+		s.jwtConfig = cfg
+	}
+
+	return s.jwtConfig
+}
+
 // DBClient ...
 func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	if s.dbClient == nil {
@@ -108,6 +145,8 @@ func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 		}
 		closer.Add(cl.Close)
 
+		log.Printf("DB connected at %s:%d/%s", s.PgConfig().Host, s.PgConfig().Port, s.PgConfig().DbName)
+
 		s.dbClient = cl
 	}
 
@@ -121,6 +160,14 @@ func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	}
 
 	return s.txManager
+}
+
+func (s *serviceProvider) PasswordManager() *password.Manager {
+	if s.passManager == nil {
+		s.passManager = password.NewManager(s.PasswordConfig())
+	}
+
+	return s.passManager
 }
 
 func (s *serviceProvider) BannerRepository(ctx context.Context) repository.BannerRepository {
@@ -148,4 +195,45 @@ func (s *serviceProvider) BannerImpl(ctx context.Context) *banner.Implementation
 	}
 
 	return s.bannerImpl
+}
+
+func (s *serviceProvider) AuthRepository(ctx context.Context) repository.AuthRepository {
+	if s.authRepo == nil {
+		s.authRepo = authRepository.NewRepo(s.Logger(), s.DBClient(ctx))
+	}
+
+	return s.authRepo
+}
+
+func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
+	if s.authService == nil {
+		s.authService = authService.NewService(
+			s.Logger(),
+			s.TxManager(ctx),
+			s.AuthRepository(ctx),
+			s.PasswordManager())
+	}
+
+	return s.authService
+}
+
+func (s *serviceProvider) JWTService() service.JWTService {
+	if s.jwtService == nil {
+		s.jwtService = jwtService.NewService(
+			s.Logger(),
+			s.JWTConfig())
+	}
+
+	return s.jwtService
+}
+
+func (s *serviceProvider) AuthImpl(ctx context.Context) *auth.Implementation {
+	if s.authImpl == nil {
+		s.authImpl = auth.NewImplementation(
+			s.Logger(),
+			s.AuthService(ctx),
+			s.JWTService())
+	}
+
+	return s.authImpl
 }

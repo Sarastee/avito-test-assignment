@@ -84,12 +84,15 @@ func (a *App) initServiceProvider(_ context.Context) error {
 }
 
 func (a *App) initHTTPServer(ctx context.Context) error {
-	h := a.serviceProvider.BannerImpl(ctx)
+	i := a.serviceProvider.BannerImpl(ctx)
+	ai := a.serviceProvider.AuthImpl(ctx)
 
 	mux := http.NewServeMux()
 
-	mux.Handle("POST /banner", http.HandlerFunc(h.CreateBanner))
-	mux.Handle("GET /banner", h.GetBanner())
+	mux.Handle("POST /register", http.HandlerFunc(ai.CreateUser))
+
+	mux.Handle("POST /banner", http.HandlerFunc(i.CreateBanner))
+	mux.Handle("GET /banner", i.GetBanner())
 
 	a.httpServer = &http.Server{
 		Addr:              a.serviceProvider.HTTPConfig().Address(),

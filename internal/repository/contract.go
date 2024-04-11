@@ -20,3 +20,10 @@ type BannerRepository interface {
 	LinkBannerAndTags(ctx context.Context, bannerID int64, tagIDs []int64) error
 	InsertInSelectedVersions(ctx context.Context, bannerID int64, revisionID int64, featureID int64, tagIDs []int64) error
 }
+
+// AuthRepository interface for repository layer
+type AuthRepository interface {
+	CreateUser(ctx context.Context, name string, passwordHash string, role string) error
+	GetPassword(ctx context.Context, name string) (string, error)
+	GetRole(ctx context.Context, name string) (string, error)
+}

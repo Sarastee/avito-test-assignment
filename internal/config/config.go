@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"net"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"
@@ -16,6 +17,16 @@ type LogConfigSearcher interface {
 // PgConfigSearcher interface for search PG config.
 type PgConfigSearcher interface {
 	Get() (*PgConfig, error)
+}
+
+// PasswordConfigSearcher interface for search Password config.
+type PasswordConfigSearcher interface {
+	Get() (*PasswordConfig, error)
+}
+
+// JWTConfigSearcher interface for search JWTConfig
+type JWTConfigSearcher interface {
+	Get() (*JWTConfig, error)
 }
 
 // HTTPConfigSearcher interface for search HTTP config.
@@ -45,6 +56,17 @@ type PgConfig struct {
 	User     string
 	Password string
 	DbName   string
+}
+
+// PasswordConfig config for password.
+type PasswordConfig struct {
+	PasswordSalt string
+}
+
+// JWTConfig config for JWT.
+type JWTConfig struct {
+	JWTSecretKey                string
+	JWTAccessTokenExpireThrough time.Duration
 }
 
 // DSN ..
