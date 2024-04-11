@@ -6,8 +6,13 @@ import (
 	"os"
 
 	"github.com/rs/zerolog"
+	"github.com/sarastee/avito-test-assignment/internal/api/banner"
 	"github.com/sarastee/avito-test-assignment/internal/config"
 	"github.com/sarastee/avito-test-assignment/internal/config/env"
+	"github.com/sarastee/avito-test-assignment/internal/repository"
+	bannerRepository "github.com/sarastee/avito-test-assignment/internal/repository/banner"
+	"github.com/sarastee/avito-test-assignment/internal/service"
+	bannerService "github.com/sarastee/avito-test-assignment/internal/service/banner"
 	"github.com/sarastee/platform_common/pkg/closer"
 	"github.com/sarastee/platform_common/pkg/db"
 	"github.com/sarastee/platform_common/pkg/db/pg"
@@ -21,13 +26,13 @@ type serviceProvider struct {
 	dbClient  db.Client
 	txManager db.TxManager
 
-	// bannerRepo
+	bannerRepo repository.BannerRepository
 	// authRepo
 
-	// bannerService
+	bannerService service.BannerService
 	// authService
 
-	// bannerImpl
+	bannerImpl *banner.Implementation
 	// authImpl
 }
 
@@ -116,4 +121,31 @@ func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	}
 
 	return s.txManager
+}
+
+func (s *serviceProvider) BannerRepository(ctx context.Context) repository.BannerRepository {
+	if s.bannerRepo == nil {
+		s.bannerRepo = bannerRepository.NewRepo(s.Logger(), s.DBClient(ctx))
+	}
+
+	return s.bannerRepo
+}
+
+func (s *serviceProvider) BannerService(ctx context.Context) service.BannerService {
+	if s.bannerService == nil {
+		s.bannerService = bannerService.NewService(
+			s.Logger(),
+			s.TxManager(ctx),
+			s.BannerRepository(ctx))
+	}
+
+	return s.bannerService
+}
+
+func (s *serviceProvider) BannerImpl(ctx context.Context) *banner.Implementation {
+	if s.bannerImpl == nil {
+		s.bannerImpl = banner.NewImplementation(s.Logger(), s.BannerService(ctx))
+	}
+
+	return s.bannerImpl
 }
