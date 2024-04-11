@@ -7,7 +7,7 @@ import (
 
 // BannerRepository interface for repository layer
 type BannerRepository interface {
-	GetBanner(ctx context.Context, tagID int64, featureID int64) (string, error)
+	GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, isAdmin bool) (string, error)
 	// GetAllBanners
 	// GetAllRevisions
 

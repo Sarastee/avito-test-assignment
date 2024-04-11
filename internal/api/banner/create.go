@@ -12,7 +12,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// CreateBanner is API layer function which process the request
+// CreateBanner is API layer function which process the request and creates banner
 func (i *Implementation) CreateBanner(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()

@@ -1,6 +1,6 @@
 module github.com/sarastee/avito-test-assignment
 
-go 1.21.7
+go 1.22.1
 
 require (
 	github.com/jackc/pgerrcode v0.0.0-20240316143900-6e2875d9b438
@@ -16,9 +16,10 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/stretchr/testify v1.9.0 // indirect
+	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 )
