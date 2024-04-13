@@ -7,6 +7,11 @@ import (
 	"github.com/sarastee/platform_common/pkg/db"
 )
 
+const (
+	defaultOffset = 0
+	defaultLimit  = 100
+)
+
 var _ service.BannerService = (*Service)(nil)
 
 // Service banner Service

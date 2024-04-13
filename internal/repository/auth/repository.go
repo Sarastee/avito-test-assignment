@@ -9,6 +9,7 @@ import (
 const (
 	usersTable = "users"
 
+	idColumn           = "id"
 	nameColum          = "name"
 	passwordHashColumn = "password_hash"
 	roleColumn         = "role"

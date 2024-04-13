@@ -1,14 +1,14 @@
 package auth
 
 import (
-	"encoding/json"
 	"errors"
 	"net/http"
 
 	"github.com/sarastee/avito-test-assignment/internal/api"
+	"github.com/sarastee/avito-test-assignment/internal/converter"
 	"github.com/sarastee/avito-test-assignment/internal/model"
 	"github.com/sarastee/avito-test-assignment/internal/repository"
-	"github.com/sarastee/avito-test-assignment/internal/utils/error_handler"
+	"github.com/sarastee/avito-test-assignment/internal/utils/response"
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
@@ -21,54 +21,40 @@ func (i *Implementation) CreateUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	err := validator.JSONValidate(r)
+	err := validator.CheckContentType(r)
 	if err != nil {
 		i.logger.Info().Msg(err.Error())
-		error_handler.HandleError(w, i.logger, err, http.StatusBadRequest)
+		response.SendError(w, http.StatusBadRequest, err, i.logger)
 		return
 	}
 
-	dec := json.NewDecoder(r.Body)
-	dec.DisallowUnknownFields()
-
-	var user model.User
-	if err = dec.Decode(&user); err != nil {
-		i.logger.Info().Msg(err.Error())
-		error_handler.HandleError(w, i.logger, err, http.StatusBadRequest)
+	var createUser model.CreateUser
+	if code, err := validator.ParseRequestBody(r.Body, &createUser, model.ValidateCreateUser, i.logger); err != nil { // nolint
+		response.SendError(w, code, err, i.logger)
 		return
 	}
 
-	if !(string(user.Role) == "ADMIN" || string(user.Role) == "USER") {
-		i.logger.Info().Msg(api.ErrIncorrectRole.Error())
-		error_handler.HandleError(w, i.logger, api.ErrIncorrectRole, http.StatusBadRequest)
-		return
-	}
-
-	err = i.authService.CreateUser(r.Context(), user)
+	userID, err := i.authService.CreateUser(r.Context(), createUser)
 	if err != nil {
 		if errors.Is(err, repository.ErrUserAlreadyRegistered) {
 			i.logger.Info().Msg(err.Error())
-			error_handler.HandleError(w, i.logger, repository.ErrUserAlreadyRegistered, http.StatusBadRequest)
+			response.SendError(w, http.StatusBadRequest, repository.ErrUserAlreadyRegistered, i.logger)
 			return
 		}
 
 		i.logger.Error().Msg(err.Error())
-		error_handler.HandleError(w, i.logger, api.ErrInternalError, http.StatusInternalServerError)
+		response.SendError(w, http.StatusInternalServerError, api.ErrInternalError, i.logger)
 		return
 	}
 
-	tokenStr, err := i.jwtService.GenerateAccessToken(user)
+	user := converter.CreateUserToUser(userID, &createUser)
+
+	tokenStr, err := i.jwtService.GenerateAccessToken(*user)
 	if err != nil {
 		i.logger.Error().Msg(err.Error())
-		error_handler.HandleError(w, i.logger, api.ErrInternalError, http.StatusInternalServerError)
+		response.SendError(w, http.StatusInternalServerError, api.ErrInternalError, i.logger)
 		return
 	}
 
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-
-	err = json.NewEncoder(w).Encode(model.Token{Token: tokenStr})
-	if err != nil {
-		i.logger.Error().Msg(err.Error())
-	}
+	response.SendStatus(w, http.StatusCreated, model.Token{Token: tokenStr}, i.logger)
 }

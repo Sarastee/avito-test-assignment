@@ -2,45 +2,36 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     role TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS banners (
-    banner_id BIGSERIAL PRIMARY KEY,
-    selected_revision_id BIGINT NULL
+    id BIGSERIAL PRIMARY KEY,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    selected_revision BIGINT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TABLE IF NOT EXISTS banner_revisions (
-    revision_id SERIAL PRIMARY KEY,
-    banner_id BIGSERIAL NOT NULL,
-    feature_id BIGINT NOT NULL,
-    content TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE,
-    CONSTRAINT fk_banner_id FOREIGN KEY (banner_id) REFERENCES banners (banner_id) ON DELETE CASCADE
-);
-
-ALTER TABLE banners
-    ADD CONSTRAINT fk_selected_revision FOREIGN KEY (selected_revision_id) REFERENCES banner_revisions (revision_id) ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS banner_revision_tags (
     id BIGSERIAL PRIMARY KEY,
-    revision_id BIGINT NOT NULL,
-    tag_id BIGINT NOT NULL,
-    CONSTRAINT fk_banner_revision_tags_revision_id FOREIGN KEY (revision_id) REFERENCES banner_revisions(revision_id) ON DELETE CASCADE,
-    UNIQUE (revision_id, tag_id)
-);
-
-CREATE TABLE IF NOT EXISTS selected_revisions (
-    banner_id INT NOT NULL,
-    revision_id BIGINT NOT NULL,
+    banner_id BIGINT NOT NULL,
     feature_id BIGINT NOT NULL,
     tag_id BIGINT NOT NULL,
-    CONSTRAINT fk_selected_revisions_revision_id FOREIGN KEY (revision_id) REFERENCES banner_revisions(revision_id) ON DELETE CASCADE,
-    PRIMARY KEY (feature_id, tag_id)
+    CONSTRAINT fk_banner_revision_tags_banner_id FOREIGN KEY (banner_id) REFERENCES banners (id) ON DELETE CASCADE,
+    CONSTRAINT banner_revision_tags_unique UNIQUE (feature_id, tag_id)
+);
+
+CREATE TABLE IF NOT EXISTS banner_revisions (
+    id BIGSERIAL PRIMARY KEY,
+    revision_id BIGINT NOT NULL DEFAULT 1,
+    banner_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_banner_revisions_banner_id FOREIGN KEY (banner_id) REFERENCES banners (id) ON DELETE CASCADE,
+    CONSTRAINT banner_revisions_unique UNIQUE (revision_id, banner_id)
 );
 -- +goose StatementEnd
 
@@ -48,7 +39,6 @@ CREATE TABLE IF NOT EXISTS selected_revisions (
 -- +goose StatementBegin
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS banners;
-DROP TABLE IF EXISTS banner_revisions;
 DROP TABLE IF EXISTS banner_revision_tags;
-DROP TABLE IF EXISTS selected_revisions;
+DROP TABLE IF EXISTS banner_revisions;
 -- +goose StatementEnd

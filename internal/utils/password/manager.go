@@ -26,10 +26,13 @@ func (m *Manager) HashPassword(password string) (string, error) {
 }
 
 // CheckPasswordHash checks password with salt.
-func (m *Manager) CheckPasswordHash(password, hash string) bool {
+func (m *Manager) CheckPasswordHash(hash, password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(m.passWithSalt(password)))
+	if err != nil {
+		return err
+	}
 
-	return err == nil
+	return nil
 }
 
 func (m *Manager) passWithSalt(password string) string {

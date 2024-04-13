@@ -7,23 +7,21 @@ import (
 )
 
 const (
-	bannersTable             = "banners"
-	bannerIDColumn           = "banner_id"
-	selectedRevisionIDColumn = "selected_revision_id"
-
-	bannerRevisionsTable = "banner_revisions"
-	revisionIDColumn     = "revision_id"
-	featureIDColumn      = "feature_id"
-	contentColumn        = "content"
-	createdAtColumn      = "created_at"
-	updatedAtColumn      = "updated_at"
-	isActiveColumn       = "is_active"
+	bannersTable           = "banners"
+	idColumn               = "id"
+	isActiveColumn         = "is_active"
+	selectedRevisionColumn = "selected_revision"
+	createdAtColumn        = "created_at"
+	updatedAtColumn        = "updated_at"
 
 	bannerRevisionTagsTable = "banner_revision_tags"
-	idColumn                = "id"
+	bannerIDColumn          = "banner_id"
+	featureIDColumn         = "feature_id"
 	tagIDColumn             = "tag_id"
 
-	selectedRevisionsTable = "selected_revisions"
+	bannerRevisionsTable = "banner_revisions"
+	contentColumn        = "content"
+	revisionIDColumn     = "revision_id"
 )
 
 var _ repository.BannerRepository = (*Repo)(nil)

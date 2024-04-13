@@ -19,6 +19,11 @@ type PgConfigSearcher interface {
 	Get() (*PgConfig, error)
 }
 
+// RedisConfigSearcher interface for search Redis config.
+type RedisConfigSearcher interface {
+	Get() (*RedisConfig, error)
+}
+
 // PasswordConfigSearcher interface for search Password config.
 type PasswordConfigSearcher interface {
 	Get() (*PasswordConfig, error)
@@ -69,7 +74,21 @@ type JWTConfig struct {
 	JWTAccessTokenExpireThrough time.Duration
 }
 
-// DSN ..
+// RedisConfig config for Redis.
+type RedisConfig struct {
+	Host        string
+	Port        string
+	MaxIdle     int
+	IdleTimeout time.Duration
+	TTL         time.Duration
+}
+
+// Address ...
+func (cfg *RedisConfig) Address() string {
+	return net.JoinHostPort(cfg.Host, cfg.Port)
+}
+
+// DSN ...
 func (cfg *PgConfig) DSN() string {
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%d/%s",

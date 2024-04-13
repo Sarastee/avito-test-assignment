@@ -13,18 +13,20 @@ import (
 )
 
 // CreateUser function which creates new user and insert it in database
-func (r Repo) CreateUser(ctx context.Context, name string, passwordHash string, role string) error {
+func (r *Repo) CreateUser(ctx context.Context, name string, passwordHash string, role string) (int64, error) {
 	queryFormat := `
 	INSERT INTO 
 	    %s (%s, %s, %s) 
 	VALUES 
 		(@%s, @%s, @%s)
+	RETURNING %s
 	`
 	query := fmt.Sprintf(
 		queryFormat,
 		usersTable,
 		nameColum, passwordHashColumn, roleColumn,
 		nameColum, passwordHashColumn, roleColumn,
+		idColumn,
 	)
 
 	q := db.Query{
@@ -38,14 +40,20 @@ func (r Repo) CreateUser(ctx context.Context, name string, passwordHash string, 
 		roleColumn:         role,
 	}
 
-	_, err := r.db.DB().ExecContext(ctx, q, args)
+	rows, err := r.db.DB().QueryContext(ctx, q, args)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+
+	userID, err := pgx.CollectOneRow(rows, pgx.RowTo[int64])
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == pgerrcode.UniqueViolation {
-			return repository.ErrUserAlreadyRegistered
+			return 0, repository.ErrUserAlreadyRegistered
 		}
-		return err
+		return 0, err
 	}
 
-	return nil
+	return userID, nil
 }

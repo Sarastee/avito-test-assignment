@@ -4,20 +4,28 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
+	"github.com/gomodule/redigo/redis"
 	"github.com/rs/zerolog"
 	"github.com/sarastee/avito-test-assignment/internal/api/auth"
 	"github.com/sarastee/avito-test-assignment/internal/api/banner"
+	"github.com/sarastee/avito-test-assignment/internal/api/middleware"
 	"github.com/sarastee/avito-test-assignment/internal/config"
 	"github.com/sarastee/avito-test-assignment/internal/config/env"
 	"github.com/sarastee/avito-test-assignment/internal/repository"
 	authRepository "github.com/sarastee/avito-test-assignment/internal/repository/auth"
 	bannerRepository "github.com/sarastee/avito-test-assignment/internal/repository/banner"
+	bannerCacheRepository "github.com/sarastee/avito-test-assignment/internal/repository/banner_cache"
 	"github.com/sarastee/avito-test-assignment/internal/service"
 	authService "github.com/sarastee/avito-test-assignment/internal/service/auth"
 	bannerService "github.com/sarastee/avito-test-assignment/internal/service/banner"
+	bannerCacheService "github.com/sarastee/avito-test-assignment/internal/service/banner_cache"
 	jwtService "github.com/sarastee/avito-test-assignment/internal/service/jwt"
 	"github.com/sarastee/avito-test-assignment/internal/utils/password"
+	"github.com/sarastee/platform_common/pkg/memory_db"
+	"github.com/sarastee/platform_common/pkg/memory_db/rs"
+
 	"github.com/sarastee/platform_common/pkg/closer"
 	"github.com/sarastee/platform_common/pkg/db"
 	"github.com/sarastee/platform_common/pkg/db/pg"
@@ -27,22 +35,28 @@ type serviceProvider struct {
 	logger         *zerolog.Logger
 	passManager    *password.Manager
 	pgConfig       *config.PgConfig
+	redisConfig    *config.RedisConfig
 	httpConfig     *config.HTTPConfig
 	passwordConfig *config.PasswordConfig
 	jwtConfig      *config.JWTConfig
 
-	dbClient  db.Client
-	txManager db.TxManager
+	dbClient      db.Client
+	txManager     db.TxManager
+	redisDbClient memory_db.Client
 
-	bannerRepo repository.BannerRepository
-	authRepo   repository.AuthRepository
+	bannerCacheRepo repository.BannerCacheRepository
+	bannerRepo      repository.BannerRepository
+	authRepo        repository.AuthRepository
 
-	bannerService service.BannerService
-	authService   service.AuthService
-	jwtService    service.JWTService
+	bannerCacheService service.BannerCacheService
+	bannerService      service.BannerService
+	authService        service.AuthService
+	jwtService         service.JWTService
 
 	bannerImpl *banner.Implementation
 	authImpl   *auth.Implementation
+
+	middleware *middleware.Middleware
 }
 
 func newServiceProvider() *serviceProvider {
@@ -131,6 +145,20 @@ func (s *serviceProvider) JWTConfig() *config.JWTConfig {
 	return s.jwtConfig
 }
 
+func (s *serviceProvider) RedisConfig() *config.RedisConfig {
+	if s.redisConfig == nil {
+		cfgSearcher := env.NewRedisCfgSearcher()
+		cfg, err := cfgSearcher.Get()
+		if err != nil {
+			log.Fatalf("unable to get Redis config:%s", err.Error())
+		}
+
+		s.redisConfig = cfg
+	}
+
+	return s.redisConfig
+}
+
 // DBClient ...
 func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	if s.dbClient == nil {
@@ -153,6 +181,33 @@ func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	return s.dbClient
 }
 
+func (s *serviceProvider) RedisDBClient(_ context.Context) memory_db.Client {
+	if s.redisDbClient == nil {
+		redisConfig := s.RedisConfig()
+		redisPool := &redis.Pool{
+			MaxIdle:     redisConfig.MaxIdle,
+			IdleTimeout: redisConfig.IdleTimeout,
+			DialContext: func(ctx context.Context) (redis.Conn, error) {
+				return redis.DialContext(ctx, "tcp", redisConfig.Address())
+			},
+			TestOnBorrowContext: func(ctx context.Context, conn redis.Conn, lastUsed time.Time) error {
+				if time.Since(lastUsed) < time.Minute {
+					return nil
+				}
+				_, err := conn.Do("PING")
+				return err
+			},
+		}
+		s.redisDbClient = rs.New(redisPool)
+
+		log.Printf("Redis connected at %s", redisConfig.Address())
+
+		closer.Add(s.redisDbClient.Close)
+	}
+
+	return s.redisDbClient
+}
+
 // TxManager ...
 func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	if s.txManager == nil {
@@ -168,6 +223,16 @@ func (s *serviceProvider) PasswordManager() *password.Manager {
 	}
 
 	return s.passManager
+}
+
+func (s *serviceProvider) BannerCacheRepository(ctx context.Context) repository.BannerCacheRepository {
+	if s.bannerCacheRepo == nil {
+		s.bannerCacheRepo = bannerCacheRepository.NewBannerCacheRepo(
+			s.RedisDBClient(ctx),
+			s.RedisConfig())
+	}
+
+	return s.bannerCacheRepo
 }
 
 func (s *serviceProvider) BannerRepository(ctx context.Context) repository.BannerRepository {
@@ -189,9 +254,21 @@ func (s *serviceProvider) BannerService(ctx context.Context) service.BannerServi
 	return s.bannerService
 }
 
+func (s *serviceProvider) BannerCacheService(ctx context.Context) service.BannerCacheService {
+	if s.bannerCacheService == nil {
+		s.bannerCacheService = bannerCacheService.NewService(
+			s.BannerCacheRepository(ctx))
+	}
+
+	return s.bannerCacheService
+}
+
 func (s *serviceProvider) BannerImpl(ctx context.Context) *banner.Implementation {
 	if s.bannerImpl == nil {
-		s.bannerImpl = banner.NewImplementation(s.Logger(), s.BannerService(ctx))
+		s.bannerImpl = banner.NewImplementation(
+			s.Logger(),
+			s.BannerService(ctx),
+			s.BannerCacheService(ctx))
 	}
 
 	return s.bannerImpl
@@ -236,4 +313,14 @@ func (s *serviceProvider) AuthImpl(ctx context.Context) *auth.Implementation {
 	}
 
 	return s.authImpl
+}
+
+func (s *serviceProvider) Middleware() *middleware.Middleware {
+	if s.middleware == nil {
+		s.middleware = middleware.NewImplementation(
+			s.Logger(),
+			s.JWTService())
+	}
+
+	return s.middleware
 }
