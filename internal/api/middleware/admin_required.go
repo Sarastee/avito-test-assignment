@@ -7,6 +7,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/response"
 )
 
+// AdminRequired is middleware which check user authorization and role
 func (m *Middleware) AdminRequired(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		isRoleAdmin, err := m.checkIsRoleAdmin(r)

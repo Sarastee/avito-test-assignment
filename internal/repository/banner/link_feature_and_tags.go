@@ -11,16 +11,16 @@ import (
 )
 
 // LinkFeatureAndTags functions which links banner, feature and tags and insert them in database
-func (r Repo) LinkFeatureAndTags(ctx context.Context, bannerID int64, revisionID int64, tagIDs []int64) error {
+func (r *Repo) LinkFeatureAndTags(ctx context.Context, bannerID int64, featureID int64, tagIDs []int64) error {
 	rows := make([][]interface{}, 0)
 	for _, tagID := range tagIDs {
-		rows = append(rows, []interface{}{bannerID, revisionID, tagID})
+		rows = append(rows, []interface{}{bannerID, featureID, tagID})
 	}
 
 	_, err := r.db.DB().CopyFromContext(
 		ctx,
 		pgx.Identifier{bannerRevisionTagsTable},
-		[]string{bannerIDColumn, revisionIDColumn, tagIDColumn},
+		[]string{bannerIDColumn, featureIDColumn, tagIDColumn},
 		pgx.CopyFromRows(rows))
 
 	if err != nil {

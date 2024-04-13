@@ -10,7 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// CreateUser is Service layer function which process request
+// CreateUser is Service layer function which process request and creates user
 func (s Service) CreateUser(ctx context.Context, user model.CreateUser) (int64, error) {
 	hashedPassword, err := s.passManager.HashPassword(user.Password)
 	if err != nil {

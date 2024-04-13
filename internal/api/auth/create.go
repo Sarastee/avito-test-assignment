@@ -29,7 +29,7 @@ func (i *Implementation) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var createUser model.CreateUser
-	if code, err := validator.ParseRequestBody(r.Body, &createUser, model.ValidateCreateUser, i.logger); err != nil {
+	if code, err := validator.ParseRequestBody(r.Body, &createUser, model.ValidateCreateUser, i.logger); err != nil { // nolint
 		response.SendError(w, code, err, i.logger)
 		return
 	}

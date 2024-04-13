@@ -6,7 +6,8 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/response"
 )
 
-func (m *Middleware) AuthRequired(next func() http.HandlerFunc) http.Handler {
+// AuthRequired is middleware which check user authorization
+func (m *Middleware) AuthRequired(next http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, err := m.checkIsRoleAdmin(r)
 		if err != nil {
@@ -15,8 +16,6 @@ func (m *Middleware) AuthRequired(next func() http.HandlerFunc) http.Handler {
 			return
 		}
 
-		next().ServeHTTP(w, r)
+		next.ServeHTTP(w, r)
 	})
 }
-
-// TODO: если не нужно убрать ProvideRole

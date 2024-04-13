@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 
 	"github.com/sarastee/avito-test-assignment/internal/model"
@@ -9,7 +10,7 @@ import (
 
 // BannerRepository interface for repository layer
 type BannerRepository interface {
-	// GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, isRoleAdmin bool) (string, error)
+	GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, revisionID sql.NullInt64) (string, error)
 	// GetAllBanners
 	// GetAllRevisions
 
@@ -30,7 +31,8 @@ type AuthRepository interface {
 	GetUser(ctx context.Context, name string) (*model.User, error)
 }
 
+// BannerCacheRepository interface for repository layer.
 type BannerCacheRepository interface {
-	Set(ctx context.Context, key string, data model.Banner) error
-	Get(ctx context.Context, key string) (string, error)
+	SetCache(ctx context.Context, key string, content string) error
+	GetCache(ctx context.Context, key string) (string, error)
 }

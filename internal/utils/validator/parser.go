@@ -25,6 +25,7 @@ const (
 	size64 = 64
 )
 
+// ParseRequestBody function which parses request body.
 func ParseRequestBody(reqBody io.ReadCloser, output any, validation func([]byte) error, logger *zerolog.Logger) (int, error) {
 	body, err := io.ReadAll(reqBody)
 	if err != nil {
@@ -52,6 +53,7 @@ func ParseRequestBody(reqBody io.ReadCloser, output any, validation func([]byte)
 	return http.StatusOK, nil
 }
 
+// ParseQueryParamToInt64 function which parse provided query param to Int64
 func ParseQueryParamToInt64(r *http.Request, param string, nullable error,
 	incorrectTypeError error, logger *zerolog.Logger) (*int64, error) {
 	rawField := r.URL.Query().Get(param)

@@ -11,7 +11,8 @@ import (
 	"github.com/sarastee/platform_common/pkg/db"
 )
 
-func (r Repo) GetUser(ctx context.Context, name string) (*model.User, error) {
+// GetUser function which get user instance from database
+func (r *Repo) GetUser(ctx context.Context, name string) (*model.User, error) {
 	// SELECT id, password_hash, role FROM users WHERE name = 'имя_пользователя';
 	queryFormat := `
 	SELECT 

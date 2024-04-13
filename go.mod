@@ -3,9 +3,12 @@ module github.com/sarastee/avito-test-assignment
 go 1.22.1
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/gomodule/redigo v1.9.2
 	github.com/jackc/pgerrcode v0.0.0-20240316143900-6e2875d9b438
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/joho/godotenv v1.5.1
+	github.com/miladibra10/vjson v0.3.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.32.0
 	github.com/sarastee/platform_common v1.1.1
@@ -15,7 +18,6 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -23,7 +25,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/miladibra10/vjson v0.3.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/tidwall/gjson v1.7.5 // indirect

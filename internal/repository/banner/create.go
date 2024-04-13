@@ -9,7 +9,7 @@ import (
 )
 
 // CreateBanner function which creates new banner and insert it in database
-func (r Repo) CreateBanner(ctx context.Context, isActive bool) (int64, error) {
+func (r *Repo) CreateBanner(ctx context.Context, isActive bool) (int64, error) {
 	queryFormat := `
 	INSERT INTO
 		%s (%s)

@@ -5,6 +5,8 @@ github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
 github.com/golang-jwt/jwt/v5 v5.2.1 h1:OuVbFODueb089Lh128TAcimifWaLhJwVflnrgM17wHk=
 github.com/golang-jwt/jwt/v5 v5.2.1/go.mod h1:pqrtFR0X4osieyHYxtmOUWsAWrfe1Q5UVIyoH402zdk=
+github.com/gomodule/redigo v1.9.2 h1:HrutZBLhSIU8abiSfW8pj8mPhOyMYjZT/wcA4/L9L9s=
+github.com/gomodule/redigo v1.9.2/go.mod h1:KsU3hiK/Ay8U42qpaJk+kuNa3C+spxapWpM+ywhcgtw=
 github.com/hashicorp/errwrap v1.0.0 h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/UYA=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+lD48awMYo=
@@ -44,10 +46,6 @@ github.com/rogpeppe/go-internal v1.12.0/go.mod h1:E+RYuTGaKKdloAfM02xzb0FW3Paa99
 github.com/rs/xid v1.5.0/go.mod h1:trrq9SKmegXys3aeAKXMUTdJsYXVwGY3RLcfgqegfbg=
 github.com/rs/zerolog v1.32.0 h1:keLypqrlIjaFsbmJOBdB/qvyF8KEtCWHwobLp5l/mQ0=
 github.com/rs/zerolog v1.32.0/go.mod h1:/7mN4D5sKwJLZQ2b/znpjC3/GQWY/xaDXUM0kKWRHss=
-github.com/sarastee/platform_common v0.0.4 h1:jBSuvLf/RQ9LkquMSaITcBWdvrXAT0TNZtaYIVYM4R0=
-github.com/sarastee/platform_common v0.0.4/go.mod h1:mxZNzUlGdFiIv+M1yp7quA/x0J6a6r3KOSuSAcYBC7w=
-github.com/sarastee/platform_common v1.1.0 h1:6GuQ5VGVcHu0K0QS5g/O4iOkws7jrCgOVn84wUp4zAQ=
-github.com/sarastee/platform_common v1.1.0/go.mod h1:mxZNzUlGdFiIv+M1yp7quA/x0J6a6r3KOSuSAcYBC7w=
 github.com/sarastee/platform_common v1.1.1 h1:szd4/ThNIcpArH8kGdDp1A3tunGF3L6jiJ5yu9Wl1Sw=
 github.com/sarastee/platform_common v1.1.1/go.mod h1:wXFdVYM8TQN3Mr5/7WXKVLCk+jbVtFkvWKlyeLMoRw0=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

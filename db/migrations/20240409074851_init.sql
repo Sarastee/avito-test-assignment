@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS banners (
 CREATE TABLE IF NOT EXISTS banner_revision_tags (
     id BIGSERIAL PRIMARY KEY,
     banner_id BIGINT NOT NULL,
-    revision_id BIGINT NOT NULL,
+    feature_id BIGINT NOT NULL,
     tag_id BIGINT NOT NULL,
     CONSTRAINT fk_banner_revision_tags_banner_id FOREIGN KEY (banner_id) REFERENCES banners (id) ON DELETE CASCADE,
-    CONSTRAINT banner_revision_tags_unique UNIQUE (revision_id, tag_id)
+    CONSTRAINT banner_revision_tags_unique UNIQUE (feature_id, tag_id)
 );
 
 CREATE TABLE IF NOT EXISTS banner_revisions (

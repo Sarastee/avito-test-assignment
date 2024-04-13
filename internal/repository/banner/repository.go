@@ -15,13 +15,12 @@ const (
 
 	bannerRevisionTagsTable = "banner_revision_tags"
 	bannerIDColumn          = "banner_id"
-	revisionIDColumn        = "revision_id"
+	featureIDColumn         = "feature_id"
 	tagIDColumn             = "tag_id"
 
 	bannerRevisionsTable = "banner_revisions"
 	contentColumn        = "content"
-
-	isRoleAdminColumn = "isRoleAdmin"
+	revisionIDColumn     = "revision_id"
 )
 
 var _ repository.BannerRepository = (*Repo)(nil)

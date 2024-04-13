@@ -7,6 +7,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
+// CreateBanner model struct
 type CreateBanner struct {
 	IsActive  bool            `json:"is_active"`
 	FeatureID int64           `json:"feature_id"`
@@ -27,6 +28,7 @@ type BannerID struct {
 	ID int64 `json:"banner_id"`
 }
 
+// ValidateCreateBanner function which validates CreateBanner struct.
 func ValidateCreateBanner(data []byte) error {
 	schema := validator.NewSchema(
 		vjson.Boolean("is_active").Required(),

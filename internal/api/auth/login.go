@@ -12,6 +12,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
+// LogIn is API layer function which process the request and login user
 func (i *Implementation) LogIn(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()
@@ -28,7 +29,7 @@ func (i *Implementation) LogIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var authUser model.AuthUser
-	if code, err := validator.ParseRequestBody(r.Body, &authUser, model.ValidateAuthUser, i.logger); err != nil {
+	if code, err := validator.ParseRequestBody(r.Body, &authUser, model.ValidateAuthUser, i.logger); err != nil { // nolint
 		response.SendError(w, code, err, i.logger)
 		return
 	}

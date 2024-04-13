@@ -1,8 +1,23 @@
 package banner_cache
 
-import "context"
+import (
+	"context"
+	"errors"
 
-func (b BannerCacheRepo) Get(ctx context.Context, key string) (string, error) {
-	//TODO implement me
-	panic("implement me")
+	"github.com/gomodule/redigo/redis"
+	"github.com/sarastee/avito-test-assignment/internal/repository"
+)
+
+func (r *BannerCacheRepo) GetCache(ctx context.Context, key string) (string, error) {
+	db := r.client.DB()
+	content, err := db.String(db.DoContext(ctx, getCommand, key))
+	if err != nil {
+		if errors.Is(err, redis.ErrNil) {
+			return "", repository.ErrCacheNotFound
+		}
+
+		return "", err
+	}
+
+	return content, nil
 }

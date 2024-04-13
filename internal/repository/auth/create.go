@@ -13,7 +13,7 @@ import (
 )
 
 // CreateUser function which creates new user and insert it in database
-func (r Repo) CreateUser(ctx context.Context, name string, passwordHash string, role string) (int64, error) {
+func (r *Repo) CreateUser(ctx context.Context, name string, passwordHash string, role string) (int64, error) {
 	queryFormat := `
 	INSERT INTO 
 	    %s (%s, %s, %s) 

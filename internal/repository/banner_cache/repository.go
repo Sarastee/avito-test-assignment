@@ -1,6 +1,7 @@
 package banner_cache
 
 import (
+	"github.com/sarastee/avito-test-assignment/internal/config"
 	"github.com/sarastee/avito-test-assignment/internal/repository"
 	"github.com/sarastee/platform_common/pkg/memory_db"
 )
@@ -14,11 +15,13 @@ const (
 var _ repository.BannerCacheRepository = (*BannerCacheRepo)(nil)
 
 type BannerCacheRepo struct {
-	client memory_db.Client
+	client      memory_db.Client
+	redisConfig *config.RedisConfig
 }
 
-func NewBannerCacheRepo(client memory_db.Client) *BannerCacheRepo {
+func NewBannerCacheRepo(client memory_db.Client, redisConfig *config.RedisConfig) *BannerCacheRepo {
 	return &BannerCacheRepo{
-		client: client,
+		client:      client,
+		redisConfig: redisConfig,
 	}
 }

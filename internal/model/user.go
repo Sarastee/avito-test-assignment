@@ -1,8 +1,6 @@
 package model
 
 import (
-	"log"
-
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/miladibra10/vjson"
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
@@ -29,6 +27,7 @@ type UserClaims struct {
 	Role     string `json:"role"`
 }
 
+// User model struct
 type User struct {
 	ID       int64  `json:"id"`
 	Name     string `json:"name"`
@@ -41,8 +40,8 @@ type Token struct {
 	Token string `json:"token"`
 }
 
+// ValidateCreateUser function which validates CreateUser struct.
 func ValidateCreateUser(data []byte) error {
-	log.Printf(string(data))
 	schema := validator.NewSchema(
 		vjson.String("name").Required(),
 		vjson.String("role").Choices("ADMIN", "USER").Required(),
@@ -52,8 +51,8 @@ func ValidateCreateUser(data []byte) error {
 	return schema.ValidateBytes(data)
 }
 
+// ValidateAuthUser function which validates AuthUser struct.
 func ValidateAuthUser(data []byte) error {
-	log.Printf(string(data))
 	schema := validator.NewSchema(
 		vjson.String("name").Required(),
 		vjson.String("password").Required(),

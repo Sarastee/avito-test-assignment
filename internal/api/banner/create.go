@@ -28,7 +28,7 @@ func (i *Implementation) CreateBanner(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var createBanner model.CreateBanner
-	if code, err := validator.ParseRequestBody(r.Body, &createBanner, model.ValidateCreateBanner, i.logger); err != nil {
+	if code, err := validator.ParseRequestBody(r.Body, &createBanner, model.ValidateCreateBanner, i.logger); err != nil { // nolint
 		response.SendError(w, code, err, i.logger)
 		return
 	}

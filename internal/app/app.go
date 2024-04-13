@@ -93,7 +93,7 @@ func (a *App) initHTTPServer(ctx context.Context) error {
 	mux.Handle("POST /register", http.HandlerFunc(ai.CreateUser))
 	mux.Handle("POST /login", http.HandlerFunc(ai.LogIn))
 
-	// mux.Handle("GET /user_banner", mw.AuthRequired(i.GetUserBanner))
+	mux.Handle("GET /user_banner", mw.AuthRequired(i.GetUserBanner))
 
 	// mux.Handle("GET /banner", mw.AdminRequired(http.HandlerFunc(i.GetAdminBanners())))
 	mux.Handle("POST /banner", mw.AdminRequired(http.HandlerFunc(i.CreateBanner)))

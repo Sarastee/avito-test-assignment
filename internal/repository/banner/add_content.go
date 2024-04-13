@@ -10,7 +10,7 @@ import (
 )
 
 // AddContent function which adds revision in database
-func (r Repo) AddContent(ctx context.Context, bannerID int64, content json.RawMessage) error {
+func (r *Repo) AddContent(ctx context.Context, bannerID int64, content json.RawMessage) error {
 	queryFormat := `
 	INSERT INTO 
 	    %s (%s, %s) 

@@ -2,11 +2,13 @@ package banner_cache
 
 import (
 	"context"
-
-	"github.com/sarastee/avito-test-assignment/internal/model"
 )
 
-func (b BannerCacheRepo) Set(ctx context.Context, key string, data model.Banner) error {
-	//TODO implement me
-	panic("implement me")
+func (r *BannerCacheRepo) SetCache(ctx context.Context, key string, content string) error {
+	_, err := r.client.DB().DoContext(ctx, setCommand, key, content, exCommand, r.redisConfig.TTL.Seconds())
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
