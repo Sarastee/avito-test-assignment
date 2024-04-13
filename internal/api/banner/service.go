@@ -6,11 +6,13 @@ import (
 )
 
 const (
-	TagIDParam      = "tag_id"      // TagIDParam database param
-	FeatureIDParam  = "feature_id"  // FeatureIDParam database param
-	RevisionIDParam = "revision_id" // RevisionIDParam database param
-	LimitParam      = "limit"       // LimitParam database param
-	OffsetParam     = "offset"      // OffsetParam database param
+	BannerIDField = "id" // BannerIDField request param
+
+	TagIDParam      = "tag_id"      // TagIDParam request param
+	FeatureIDParam  = "feature_id"  // FeatureIDParam request param
+	RevisionIDParam = "revision_id" // RevisionIDParam request param
+	LimitParam      = "limit"       // LimitParam request param
+	OffsetParam     = "offset"      // OffsetParam request param
 )
 
 // Implementation for banner Server

@@ -55,6 +55,7 @@ func (r *Repo) GetBannerFromDatabase(ctx context.Context, tagID int64, featureID
 	if err != nil {
 		return "", err
 	}
+	defer rows.Close()
 
 	banner, err := pgx.CollectOneRow(rows, pgx.RowTo[string])
 	if err != nil {

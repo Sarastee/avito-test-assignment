@@ -95,9 +95,9 @@ func (a *App) initHTTPServer(ctx context.Context) error {
 
 	mux.Handle("GET /user_banner", mw.AuthRequired(i.GetUserBanner))
 
-	// mux.Handle("GET /banner", mw.AdminRequired(http.HandlerFunc(i.GetAdminBanners())))
 	mux.Handle("POST /banner", mw.AdminRequired(http.HandlerFunc(i.CreateBanner)))
-	// mux.Handle("DELETE /banner")
+	// mux.Handle("GET /banner", mw.AdminRequired(http.HandlerFunc(i.GetAdminBanners())))
+	mux.Handle("DELETE /banner/{id}", mw.AdminRequired(http.HandlerFunc(i.DeleteBanner)))
 
 	a.httpServer = &http.Server{
 		Addr:              a.serviceProvider.HTTPConfig().Address(),

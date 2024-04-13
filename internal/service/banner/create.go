@@ -7,7 +7,7 @@ import (
 )
 
 // CreateBanner is Service layer function which process request
-func (s Service) CreateBanner(ctx context.Context, isActive bool, content json.RawMessage, featureID int64, tagIDs []int64) (int64, error) {
+func (s *Service) CreateBanner(ctx context.Context, isActive bool, content json.RawMessage, featureID int64, tagIDs []int64) (int64, error) {
 	s.logger.Debug().Msg("attempt to create a banner")
 
 	var bannerID int64

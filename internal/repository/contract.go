@@ -19,7 +19,7 @@ type BannerRepository interface {
 	LinkFeatureAndTags(ctx context.Context, bannerID int64, featureID int64, tagIDs []int64) error
 
 	// UpdateBanner
-	// DeleteBanner
+	DeleteBanner(ctx context.Context, bannerID int64) error
 	// DeleteBannerByID
 
 	// SelectRevision

@@ -18,8 +18,8 @@ type AuthService interface {
 type BannerService interface {
 	CreateBanner(ctx context.Context, isActive bool, content json.RawMessage, featureID int64, tagIDs []int64) (int64, error)
 	// UpdateBanner
+	DeleteBanner(ctx context.Context, id int64) error
 	// DeleteBanner
-	// DeleteBannerByID
 
 	// SelectRevision
 	GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, revisionID sql.NullInt64) (string, error)
