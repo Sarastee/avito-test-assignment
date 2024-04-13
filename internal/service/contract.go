@@ -22,6 +22,7 @@ type BannerService interface {
 	// DeleteBanner
 
 	// SelectRevision
+	GetAdminBanners(ctx context.Context, featureID sql.NullInt64, tagID sql.NullInt64, offset sql.NullInt64, limit sql.NullInt64) ([]model.Banner, error)
 	GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, revisionID sql.NullInt64) (string, error)
 	// GetAllBanners
 	// GetAllRevisions

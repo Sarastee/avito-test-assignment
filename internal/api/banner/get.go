@@ -1,21 +1,18 @@
 package banner
 
 import (
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
 
 	"github.com/sarastee/avito-test-assignment/internal/api"
+	"github.com/sarastee/avito-test-assignment/internal/converter"
 	"github.com/sarastee/avito-test-assignment/internal/repository"
 	"github.com/sarastee/avito-test-assignment/internal/utils/response"
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// GetUserBanner is API layer function which process the request and gets banner
-// Fields: tag_id: required, feature_id: required, version: not_required, use_last_revision: not_required
-// if use_last_revision == false -> cache, if cache == nil -> db -> getBanner -> cacheSet
-// if use_last_revision == true -> db -> getBanner -> cacheSet
+// GetUserBanner is API layer function which process the request and pull out banner from database
 func (i *Implementation) GetUserBanner(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()
@@ -49,12 +46,7 @@ func (i *Implementation) GetUserBanner(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var nullRevisionID sql.NullInt64
-	if revisionID != nil {
-		nullRevisionID = sql.NullInt64{Int64: *revisionID, Valid: true}
-	} else {
-		nullRevisionID = sql.NullInt64{Valid: false}
-	}
+	nullRevisionID := converter.Int64PointerToSQLNullInt64(revisionID)
 
 	var useLastRevision bool
 	useLastRevisionStr := r.URL.Query().Get("use_last_revision")

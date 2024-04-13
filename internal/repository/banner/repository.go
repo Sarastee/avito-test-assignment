@@ -11,6 +11,7 @@ const (
 	idColumn               = "id"
 	isActiveColumn         = "is_active"
 	selectedRevisionColumn = "selected_revision"
+	createdAtColumn        = "created_at"
 	updatedAtColumn        = "updated_at"
 
 	bannerRevisionTagsTable = "banner_revision_tags"

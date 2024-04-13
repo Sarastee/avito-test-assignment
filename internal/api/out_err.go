@@ -11,9 +11,10 @@ const (
 	errMsgFeatureNotFound     = "feature_id not found"
 	errMsgFeatureIsNotANumber = "feature_id is not a number"
 
-	errMsgParamsNotProvided = "tag_id or feature_id weren't provided"
-
 	errMsgRevisionIsNotANumber = "revision_id is not a number"
+
+	errMsgLimitIsNotANumber  = "limit is not a number"
+	errMsgOffsetIsNotANumber = "offset is not a number"
 
 	errMsgInsufficientRights = "insufficient rights to execute the command"
 
@@ -30,10 +31,10 @@ var (
 	ErrFeatureNotFound     = errors.New(errMsgFeatureNotFound)     // ErrFeatureNotFound is Feature Not Found Error object
 	ErrFeatureIsNotANumber = errors.New(errMsgFeatureIsNotANumber) // ErrFeatureIsNotANumber is Feature Is Not A Number Error
 
-	ErrParamsNotProvided = errors.New(errMsgParamsNotProvided) // ErrParamsNotProvided is Params Not Provided Error object
-
 	ErrRevisionIsNotANumber = errors.New(errMsgRevisionIsNotANumber) // ErrRevisionIsNotANumber is Revision Is Not A Number Error object
 
+	ErrLimitIsNotANumber  = errors.New(errMsgLimitIsNotANumber)  // ErrLimitIsNotANumber is Limit Is Not A Number Error object
+	ErrOffsetIsNotANumber = errors.New(errMsgOffsetIsNotANumber) // ErrOffsetIsNotANumber is Offset Is Not A Number Error object
 	ErrInsufficientRights = errors.New(errMsgInsufficientRights) // ErrInsufficientRights is Insufficient Rights Error object
 
 	ErrNoTokenProvided = errors.New(errMsgNoTokenProvided) // ErrNoTokenProvided is No Token Provided Error object
