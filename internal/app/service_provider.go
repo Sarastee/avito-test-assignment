@@ -8,6 +8,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/sarastee/avito-test-assignment/internal/api/auth"
 	"github.com/sarastee/avito-test-assignment/internal/api/banner"
+	"github.com/sarastee/avito-test-assignment/internal/api/middleware"
 	"github.com/sarastee/avito-test-assignment/internal/config"
 	"github.com/sarastee/avito-test-assignment/internal/config/env"
 	"github.com/sarastee/avito-test-assignment/internal/repository"
@@ -18,6 +19,7 @@ import (
 	bannerService "github.com/sarastee/avito-test-assignment/internal/service/banner"
 	jwtService "github.com/sarastee/avito-test-assignment/internal/service/jwt"
 	"github.com/sarastee/avito-test-assignment/internal/utils/password"
+
 	"github.com/sarastee/platform_common/pkg/closer"
 	"github.com/sarastee/platform_common/pkg/db"
 	"github.com/sarastee/platform_common/pkg/db/pg"
@@ -43,6 +45,8 @@ type serviceProvider struct {
 
 	bannerImpl *banner.Implementation
 	authImpl   *auth.Implementation
+
+	middleware *middleware.Middleware
 }
 
 func newServiceProvider() *serviceProvider {
@@ -236,4 +240,14 @@ func (s *serviceProvider) AuthImpl(ctx context.Context) *auth.Implementation {
 	}
 
 	return s.authImpl
+}
+
+func (s *serviceProvider) Middleware() *middleware.Middleware {
+	if s.middleware == nil {
+		s.middleware = middleware.NewImplementation(
+			s.Logger(),
+			s.JWTService())
+	}
+
+	return s.middleware
 }

@@ -5,15 +5,14 @@ import (
 	"net/http"
 
 	"github.com/sarastee/avito-test-assignment/internal/api"
-	"github.com/sarastee/avito-test-assignment/internal/converter"
 	"github.com/sarastee/avito-test-assignment/internal/model"
 	"github.com/sarastee/avito-test-assignment/internal/repository"
+	"github.com/sarastee/avito-test-assignment/internal/service"
 	"github.com/sarastee/avito-test-assignment/internal/utils/response"
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// CreateUser is API layer function which process the request and creates user
-func (i *Implementation) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (i *Implementation) LogIn(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()
 		if err != nil {
@@ -28,17 +27,23 @@ func (i *Implementation) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var createUser model.CreateUser
-	if code, err := validator.ParseRequestBody(r.Body, &createUser, model.ValidateCreateUser, i.logger); err != nil {
+	var authUser model.AuthUser
+	if code, err := validator.ParseRequestBody(r.Body, &authUser, model.ValidateAuthUser, i.logger); err != nil {
 		response.SendError(w, code, err, i.logger)
 		return
 	}
 
-	userID, err := i.authService.CreateUser(r.Context(), createUser)
+	userModel, err := i.authService.VerifyUser(r.Context(), authUser)
 	if err != nil {
-		if errors.Is(err, repository.ErrUserAlreadyRegistered) {
+		if errors.Is(err, repository.ErrUserNotFound) {
 			i.logger.Info().Msg(err.Error())
-			response.SendError(w, http.StatusBadRequest, repository.ErrUserAlreadyRegistered, i.logger)
+			response.SendError(w, http.StatusNotFound, repository.ErrUserNotFound, i.logger)
+			return
+		}
+
+		if errors.Is(err, service.ErrWrongPassword) {
+			i.logger.Info().Msg(err.Error())
+			response.SendError(w, http.StatusUnauthorized, service.ErrWrongPassword, i.logger)
 			return
 		}
 
@@ -47,14 +52,12 @@ func (i *Implementation) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := converter.CreateUserToUser(userID, &createUser)
-
-	tokenStr, err := i.jwtService.GenerateAccessToken(*user)
+	tokenStr, err := i.jwtService.GenerateAccessToken(*userModel)
 	if err != nil {
 		i.logger.Error().Msg(err.Error())
 		response.SendError(w, http.StatusInternalServerError, api.ErrInternalError, i.logger)
 		return
 	}
 
-	response.SendStatus(w, http.StatusCreated, model.Token{Token: tokenStr}, i.logger)
+	response.SendStatus(w, http.StatusOK, model.Token{Token: tokenStr}, i.logger)
 }

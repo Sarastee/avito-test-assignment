@@ -20,6 +20,12 @@ paths:
             type: integer
             description: Идентификатор фичи
         - in: query
+          name: version_id
+          required: false
+          schema:
+            type: integer
+            description: Версия баннера
+        - in: query
           name: use_last_revision
           required: false
           schema:

@@ -14,6 +14,16 @@ services:
       - "${PG_PORT}:${PG_PORT}"
     command: -p ${PG_PORT}
 
+  redis:
+    image: redis:7.2.4
+    restart: always
+    env_file:
+      - deploy/env/.env.prod
+    expose:
+      - "${REDIS_PORT}"
+    command: --port ${REDIS_PORT}
+
+
   migrator:
     build:
       dockerfile: deploy/dockerfiles/migrator.Dockerfile
@@ -32,6 +42,7 @@ services:
       - deploy/env/.env.prod
     depends_on:
       - storage
+      - redis
     environment:
       PG_HOST: storage
     ports:

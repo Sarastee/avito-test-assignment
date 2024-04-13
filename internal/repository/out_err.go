@@ -3,6 +3,7 @@ package repository
 import "errors"
 
 const (
+	errMsgUserNotFound          = "user not found"
 	errMsgUserAlreadyRegistered = "user already registered"
 
 	errMsgNoRowsAffected      = "no rows were affected"
@@ -11,6 +12,7 @@ const (
 )
 
 var (
+	ErrUserNotFound          = errors.New(errMsgUserNotFound)          // errUserNotFound is User Not Found Error object
 	ErrUserAlreadyRegistered = errors.New(errMsgUserAlreadyRegistered) // ErrUserAlreadyRegistered is User Already Registered Error object
 
 	ErrNoRowsAffected      = errors.New(errMsgNoRowsAffected)      // ErrNoRowsAffected is No Rows Affected Error object

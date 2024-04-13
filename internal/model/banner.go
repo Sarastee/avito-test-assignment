@@ -1,6 +1,18 @@
 package model
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/miladibra10/vjson"
+	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
+)
+
+type CreateBanner struct {
+	IsActive  bool            `json:"is_active"`
+	FeatureID int64           `json:"feature_id"`
+	TagsIDs   []int64         `json:"tag_ids"`
+	Content   json.RawMessage `json:"content"`
+}
 
 // Banner model struct
 type Banner struct {
@@ -13,4 +25,15 @@ type Banner struct {
 // BannerID model struct
 type BannerID struct {
 	ID int64 `json:"banner_id"`
+}
+
+func ValidateCreateBanner(data []byte) error {
+	schema := validator.NewSchema(
+		vjson.Boolean("is_active").Required(),
+		vjson.Integer("feature_id").Positive().Required(),
+		vjson.Array("tag_ids", vjson.Integer("id").Positive().Required()),
+		vjson.Object("content", vjson.NewSchema()).Required(),
+	)
+
+	return schema.ValidateBytes(data)
 }

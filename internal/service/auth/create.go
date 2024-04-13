@@ -11,23 +11,23 @@ import (
 )
 
 // CreateUser is Service layer function which process request
-func (s Service) CreateUser(ctx context.Context, user model.User) error {
-	hashedPassword, err := s.passManager.HashPassword(user.PasswordHash)
+func (s Service) CreateUser(ctx context.Context, user model.CreateUser) (int64, error) {
+	hashedPassword, err := s.passManager.HashPassword(user.Password)
 	if err != nil {
-		s.logger.Error().Err(err).Msg("failed to hash password")
+		s.logger.Info().Err(err).Msg("failed to hash password")
 		if errors.Is(err, bcrypt.ErrPasswordTooLong) {
-			return service.ErrPasswordToLong
+			return 0, service.ErrPasswordToLong
 		}
 
-		return err
+		return 0, err
 	}
 
-	user.PasswordHash = hashedPassword
+	user.Password = hashedPassword
 
-	err = s.authRepo.CreateUser(ctx, user.Name, user.PasswordHash, string(user.Role))
+	userID, err := s.authRepo.CreateUser(ctx, user.Name, user.Password, user.Role)
 	if err != nil {
-		return fmt.Errorf("failed to create user: %w", err)
+		return 0, fmt.Errorf("failed to create user: %w", err)
 	}
 
-	return nil
+	return userID, nil
 }
