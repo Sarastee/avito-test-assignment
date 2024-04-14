@@ -21,7 +21,7 @@ func SendStatus(w http.ResponseWriter, code int, data any, logger *zerolog.Logge
 	w.WriteHeader(code)
 
 	if rErr := json.NewEncoder(w).Encode(data); rErr != nil {
-		if !errors.As(rErr, &errJSErr) { // nolint
+		if !errors.Is(rErr, errJSErr) {
 			logger.Warn().Err(rErr).Msgf("error while sending response with status code: %d", code)
 		}
 	}
