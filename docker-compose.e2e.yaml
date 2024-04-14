@@ -26,6 +26,7 @@ services:
 
   migrator:
     build:
+      context: .
       dockerfile: deploy/dockerfiles/migrator.Dockerfile
     env_file:
       - deploy/env/.env.test
