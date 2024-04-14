@@ -22,7 +22,7 @@ jobs:
         run: go build -o ./bin/ -v ./...
 
       - name: Test
-        run: go test -v ./...
+        run: make test
 
   linter:
     name: lint
