@@ -18,21 +18,13 @@ func NewManager(passwordConfig *config.PasswordConfig) *Manager {
 // HashPassword hashes password with salt.
 func (m *Manager) HashPassword(password string) (string, error) {
 	passBytes, err := bcrypt.GenerateFromPassword([]byte(m.passWithSalt(password)), bcrypt.MinCost)
-	if err != nil {
-		return "", err
-	}
-
-	return string(passBytes), nil
+	return string(passBytes), err
 }
 
 // CheckPasswordHash checks password with salt.
-func (m *Manager) CheckPasswordHash(hash, password string) error {
+func (m *Manager) CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(m.passWithSalt(password)))
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err == nil
 }
 
 func (m *Manager) passWithSalt(password string) string {

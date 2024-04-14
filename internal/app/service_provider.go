@@ -190,7 +190,7 @@ func (s *serviceProvider) RedisDBClient(_ context.Context) memory_db.Client {
 			DialContext: func(ctx context.Context) (redis.Conn, error) {
 				return redis.DialContext(ctx, "tcp", redisConfig.Address())
 			},
-			TestOnBorrowContext: func(ctx context.Context, conn redis.Conn, lastUsed time.Time) error {
+			TestOnBorrowContext: func(_ context.Context, conn redis.Conn, lastUsed time.Time) error {
 				if time.Since(lastUsed) < time.Minute {
 					return nil
 				}
@@ -217,7 +217,7 @@ func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	return s.txManager
 }
 
-func (s *serviceProvider) PasswordManager() *password.Manager {
+func (s *serviceProvider) PassManager() *password.Manager {
 	if s.passManager == nil {
 		s.passManager = password.NewManager(s.PasswordConfig())
 	}
@@ -288,7 +288,7 @@ func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 			s.Logger(),
 			s.TxManager(ctx),
 			s.AuthRepository(ctx),
-			s.PasswordManager())
+			s.PassManager())
 	}
 
 	return s.authService
