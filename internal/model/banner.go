@@ -17,6 +17,22 @@ type CreateBanner struct {
 	Content   json.RawMessage `json:"content"`
 }
 
+// UpdateBanner model struct
+type UpdateBanner struct {
+	IsActive  *bool            `json:"is_active,omitempty"`
+	FeatureID *int64           `json:"feature_id,omitempty"`
+	TagIDs    *[]int64         `json:"tag_ids,omitempty"`
+	Content   *json.RawMessage `json:"content,omitempty"`
+}
+
+// UpdateBannerSQL model struct
+type UpdateBannerSQL struct {
+	IsActive  sql.NullBool              `json:"is_active,omitempty"`
+	FeatureID sql.NullInt64             `json:"feature_id,omitempty"`
+	TagsIDs   sql.Null[[]int64]         `json:"tag_ids,omitempty"`
+	Content   sql.Null[json.RawMessage] `json:"content,omitempty"`
+}
+
 // BannerID model struct
 type BannerID struct {
 	ID int64 `json:"banner_id"`
@@ -53,6 +69,18 @@ func ValidateCreateBanner(data []byte) error {
 		vjson.Integer("feature_id").Positive().Required(),
 		vjson.Array("tag_ids", vjson.Integer("id").Positive().Required()),
 		vjson.Object("content", vjson.NewSchema()).Required(),
+	)
+
+	return schema.ValidateBytes(data)
+}
+
+// ValidateUpdateBanner function which validates UpdateBanner struct.
+func ValidateUpdateBanner(data []byte) error {
+	schema := validator.NewSchema(
+		vjson.Boolean("is_active"),
+		vjson.Integer("feature_id").Positive(),
+		vjson.Array("tag_ids", vjson.Integer("id").Positive()),
+		vjson.Object("content", vjson.NewSchema()),
 	)
 
 	return schema.ValidateBytes(data)

@@ -7,9 +7,10 @@ import (
 
 // DeleteBanner is Service layer function which process request
 func (s *Service) DeleteBanner(ctx context.Context, id int64) error {
+	s.logger.Debug().Msg("attempt to delete a banner")
+
 	err := s.bannerRepo.DeleteBanner(ctx, id)
 	if err != nil {
-		s.logger.Err(err).Msg("failed attempt to delete from database")
 		return fmt.Errorf("failed attempt to delete banner: %w", err)
 	}
 

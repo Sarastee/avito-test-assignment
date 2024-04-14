@@ -10,6 +10,8 @@ import (
 
 // GetAdminBanners is Service layer function which get banner array from database
 func (s *Service) GetAdminBanners(ctx context.Context, featureID sql.NullInt64, tagID sql.NullInt64, offset sql.NullInt64, limit sql.NullInt64) ([]model.Banner, error) {
+	s.logger.Debug().Msg("attempt to get banners")
+
 	var entityOffset int64 = defaultOffset
 	var entityLimit int64 = defaultLimit
 
@@ -31,7 +33,6 @@ func (s *Service) GetAdminBanners(ctx context.Context, featureID sql.NullInt64, 
 		var txErr error
 		banners, txErr = s.bannerRepo.FilterBanners(ctx, bnrEntity, entityOffset, entityLimit)
 		if txErr != nil {
-			s.logger.Err(txErr).Msg("failed attempt to filter banners")
 			return fmt.Errorf("failed attempt to filter banner: %w", txErr)
 		}
 
@@ -41,13 +42,11 @@ func (s *Service) GetAdminBanners(ctx context.Context, featureID sql.NullInt64, 
 
 		banners, txErr = s.bannerRepo.GetTagAndFeature(ctx, banners)
 		if txErr != nil {
-			s.logger.Err(txErr).Msg("failed attempt to filter banners")
 			return fmt.Errorf("failed attempt to filter banner: %w", txErr)
 		}
 
 		banners, txErr = s.bannerRepo.GetContent(ctx, banners)
 		if txErr != nil {
-			s.logger.Err(txErr).Msg("failed attempt to filter banners")
 			return fmt.Errorf("failed attempt to filter banner: %w", txErr)
 		}
 

@@ -16,19 +16,16 @@ func (s *Service) CreateBanner(ctx context.Context, isActive bool, content json.
 
 		bannerID, txErr = s.bannerRepo.CreateBanner(ctx, isActive)
 		if txErr != nil {
-			s.logger.Err(txErr).Msg("failed attempt to create banner")
 			return fmt.Errorf("failed attempt to create banner: %w", txErr)
 		}
 
 		txErr = s.bannerRepo.AddContent(ctx, bannerID, content)
 		if txErr != nil {
-			s.logger.Err(txErr).Msg("failed attempt to add content")
 			return fmt.Errorf("failed attempt to add content: %w", txErr)
 		}
 
 		txErr = s.bannerRepo.LinkFeatureAndTags(ctx, bannerID, featureID, tagIDs)
 		if txErr != nil {
-			s.logger.Err(txErr).Msg("failed attempt to link feature and tags to banner")
 			return fmt.Errorf("failed attempt to to link feature and tags to banner: %w", txErr)
 		}
 

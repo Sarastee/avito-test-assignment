@@ -16,19 +16,19 @@ LOCAL_BIN:=$(CURDIR)/bin
 CUR_MIGRATION_DIR=$(MIGRATION_DIR)
 MIGRATION_DSN="host=$(PG_HOST) port=$(PG_PORT) dbname=$(POSTGRES_DB) user=$(POSTGRES_USER) password=$(POSTGRES_PASSWORD) sslmode=disable"
 
+app-start:
+	docker-compose --env-file deploy/env/.env.prod -f docker-compose.prod.yaml up -d --build
+
+app-down:
+	docker-compose --env-file deploy/env/.env.prod -f docker-compose.prod.yaml down -v
+
 local-start-app:
 	docker-compose --env-file deploy/env/.env.local -f docker-compose.local.yaml up -d --build
 
 local-down-app:
 	docker-compose --env-file deploy/env/.env.local -f docker-compose.local.yaml down -v
 
-prod-start-app:
-	docker-compose --env-file deploy/env/.env.prod -f docker-compose.prod.yaml up -d --build
-
-prod-down-app:
-	docker-compose --env-file deploy/env/.env.prod -f docker-compose.prod.yaml down -v
-
-app-start:
+local-app-start:
 	go run ./cmd/grpc_server/main.go --config=./deploy/env/.env.local
 
 lint:

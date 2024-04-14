@@ -28,7 +28,7 @@ func (r *Repo) DeleteBanner(ctx context.Context, bannerID int64) error {
 		bannersTable,
 		idColumn,
 		bannerIDColumn,
-		bannerRevisionTagsTable,
+		bannerFeatureTagsTable,
 		bannerIDColumn, bannerIDColumn,
 	)
 

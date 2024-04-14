@@ -11,13 +11,11 @@ const (
 	idColumn               = "id"
 	isActiveColumn         = "is_active"
 	selectedRevisionColumn = "selected_revision"
-	createdAtColumn        = "created_at"
-	updatedAtColumn        = "updated_at"
 
-	bannerRevisionTagsTable = "banner_revision_tags"
-	bannerIDColumn          = "banner_id"
-	featureIDColumn         = "feature_id"
-	tagIDColumn             = "tag_id"
+	bannerFeatureTagsTable = "banner_feature_tags"
+	bannerIDColumn         = "banner_id"
+	featureIDColumn        = "feature_id"
+	tagIDColumn            = "tag_id"
 
 	bannerRevisionsTable = "banner_revisions"
 	contentColumn        = "content"

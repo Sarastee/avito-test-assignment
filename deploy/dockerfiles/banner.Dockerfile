@@ -6,7 +6,7 @@ COPY go.mod .
 
 COPY . .
 
-RUN go build -o banner_service ./cmd/app/main.go
+RUN go build -o banner_service ./cmd/service/main.go
 
 FROM ubuntu:20.04
 

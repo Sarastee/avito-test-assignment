@@ -19,7 +19,7 @@ func (r *Repo) LinkFeatureAndTags(ctx context.Context, bannerID int64, featureID
 
 	_, err := r.db.DB().CopyFromContext(
 		ctx,
-		pgx.Identifier{bannerRevisionTagsTable},
+		pgx.Identifier{bannerFeatureTagsTable},
 		[]string{bannerIDColumn, featureIDColumn, tagIDColumn},
 		pgx.CopyFromRows(rows))
 

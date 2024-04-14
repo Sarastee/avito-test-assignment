@@ -11,7 +11,7 @@ import (
 const (
 	getTagQuery = `
 		SELECT banner_id, array_agg(tag_id), feature_id 
-		FROM banner_revision_tags
+		FROM banner_feature_tags
 		WHERE banner_id = ANY ($1::bigint[])
 		GROUP BY banner_id, feature_id
 	`

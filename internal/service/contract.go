@@ -17,16 +17,11 @@ type AuthService interface {
 // BannerService interface for service layer
 type BannerService interface {
 	CreateBanner(ctx context.Context, isActive bool, content json.RawMessage, featureID int64, tagIDs []int64) (int64, error)
-	// UpdateBanner
-	DeleteBanner(ctx context.Context, id int64) error
-	// DeleteBanner
+	UpdateBanner(ctx context.Context, bannerID int64, bnr *model.UpdateBannerSQL) (int64, error)
+	DeleteBanner(ctx context.Context, bannerID int64) error
 
-	// SelectRevision
 	GetAdminBanners(ctx context.Context, featureID sql.NullInt64, tagID sql.NullInt64, offset sql.NullInt64, limit sql.NullInt64) ([]model.Banner, error)
 	GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, revisionID sql.NullInt64) (string, error)
-	// GetAllBanners
-	// GetAllRevisions
-
 }
 
 // JWTService interface for service layer
