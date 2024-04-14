@@ -41,7 +41,7 @@ fix-imports:
 test:
 	docker-compose --env-file deploy/env/.env.test -f docker-compose.e2e.yaml up -d --build
 	make wait_container
-	docker logs avito-test-e2e-1
+	make show_logs
 	docker-compose --env-file deploy/env/.env.test -f docker-compose.e2e.yaml down -v
         
 wait_container:
@@ -51,6 +51,14 @@ wait_container:
   	    CONTAINER_NAME="avito-test-e2e-1"; \
 	fi; \
 	docker wait "$$CONTAINER_NAME"
+
+show_logs:
+	@if [ "$$CI" = "true" ]; then \
+  		CONTAINER_NAME="avito-test_e2e_1"; \
+  	else \
+  	    CONTAINER_NAME="avito-test-e2e-1"; \
+	fi; \
+	docker logs "$$CONTAINER_NAME"
 
 install-deps:
 	GOBIN=$(LOCAL_BIN) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.57.2
