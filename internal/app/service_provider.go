@@ -217,7 +217,7 @@ func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	return s.txManager
 }
 
-func (s *serviceProvider) PasswordManager() *password.Manager {
+func (s *serviceProvider) PassManager() *password.Manager {
 	if s.passManager == nil {
 		s.passManager = password.NewManager(s.PasswordConfig())
 	}
@@ -288,7 +288,7 @@ func (s *serviceProvider) AuthService(ctx context.Context) service.AuthService {
 			s.Logger(),
 			s.TxManager(ctx),
 			s.AuthRepository(ctx),
-			s.PasswordManager())
+			s.PassManager())
 	}
 
 	return s.authService

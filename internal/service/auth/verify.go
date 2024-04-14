@@ -14,9 +14,9 @@ func (s Service) VerifyUser(ctx context.Context, userAuth model.AuthUser) (*mode
 		return nil, err
 	}
 
-	err = s.passManager.CheckPasswordHash(userModel.Password, userAuth.Password)
-	if err != nil {
-		s.logger.Info().Err(err).Msg("failed to hash password")
+	ok := s.passManager.CheckPasswordHash(userAuth.Password, userModel.Password)
+	if !ok {
+		s.logger.Info().Msg("failed to hash password")
 		return nil, service.ErrWrongPassword
 	}
 	return userModel, nil
