@@ -11,19 +11,20 @@ import (
 // BannerRepository interface for repository layer
 type BannerRepository interface {
 	GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, revisionID sql.NullInt64) (string, error)
+
 	FilterBanners(ctx context.Context, bnrEntity *model.BannerInfo, offset int64, limit int64) ([]model.Banner, error)
 	GetTagAndFeature(ctx context.Context, banners []model.Banner) ([]model.Banner, error)
 	GetContent(ctx context.Context, banners []model.Banner) ([]model.Banner, error)
+	GetBannerID(ctx context.Context, providedID int64) (int64, error)
 
 	CreateBanner(ctx context.Context, isActive bool) (int64, error)
 	AddContent(ctx context.Context, bannerID int64, content json.RawMessage) error
 	LinkFeatureAndTags(ctx context.Context, bannerID int64, featureID int64, tagIDs []int64) error
 
-	// UpdateBanner
-	DeleteBanner(ctx context.Context, bannerID int64) error
-	// DeleteBannerByID
+	UpdateActiveQuery(ctx context.Context, bannerID int64, IsActive bool) (int64, error)
+	UpdateBannerInfo(ctx context.Context, bannerID int64, bnr *model.UpdateBannerSQL) error
 
-	// SelectRevision
+	DeleteBanner(ctx context.Context, bannerID int64) error
 }
 
 // AuthRepository interface for repository layer

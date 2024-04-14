@@ -17,7 +17,7 @@ const (
 	filterNotNullQuery = `
 		SELECT DISTINCT banners.id, is_active, created_at, updated_at
 		FROM banners
-		INNER JOIN banner_revision_tags as brt ON (brt.banner_id = banners.id)
+		INNER JOIN banner_feature_tags as brt ON (brt.banner_id = banners.id)
 		WHERE
 		    (CASE WHEN $1::bigint IS NOT NULL THEN feature_id = $1 ELSE TRUE END)
 		AND (CASE WHEN $2::bigint IS NOT NULL THEN tag_id = $2 ELSE TRUE END)

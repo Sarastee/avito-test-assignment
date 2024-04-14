@@ -28,7 +28,7 @@ func (r *Repo) GetBannerFromDatabase(ctx context.Context, tagID int64, featureID
 		queryFormat,
 		contentColumn,
 		bannersTable,
-		bannerRevisionTagsTable, bannerRevisionTagsTable, bannerIDColumn, bannersTable, idColumn,
+		bannerFeatureTagsTable, bannerFeatureTagsTable, bannerIDColumn, bannersTable, idColumn,
 		bannerRevisionsTable, bannerIDColumn, bannersTable, idColumn,
 		isActiveColumn,
 		revisionIDColumn, revisionIDColumn, bannersTable, selectedRevisionColumn,

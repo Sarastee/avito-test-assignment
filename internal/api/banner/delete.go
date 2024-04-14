@@ -29,12 +29,14 @@ func (i *Implementation) DeleteBanner(w http.ResponseWriter, r *http.Request) {
 
 	bannerID, err := strconv.ParseInt(r.PathValue(BannerIDField), 10, 64)
 	if err != nil {
+		i.logger.Info().Msg(err.Error())
 		response.SendError(w, http.StatusNotFound, err, i.logger)
 		return
 	}
 
 	if err := i.bannerService.DeleteBanner(r.Context(), bannerID); err != nil {
 		if errors.Is(err, repository.ErrBannerNotFoundDelete) {
+			i.logger.Info().Msg(err.Error())
 			response.SendError(w, http.StatusNotFound, err, i.logger)
 			return
 		}
