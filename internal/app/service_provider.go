@@ -190,7 +190,7 @@ func (s *serviceProvider) RedisDBClient(_ context.Context) memory_db.Client {
 			DialContext: func(ctx context.Context) (redis.Conn, error) {
 				return redis.DialContext(ctx, "tcp", redisConfig.Address())
 			},
-			TestOnBorrowContext: func(ctx context.Context, conn redis.Conn, lastUsed time.Time) error {
+			TestOnBorrowContext: func(_ context.Context, conn redis.Conn, lastUsed time.Time) error {
 				if time.Since(lastUsed) < time.Minute {
 					return nil
 				}
