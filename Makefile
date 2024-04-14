@@ -45,7 +45,7 @@ test:
 	docker-compose --env-file deploy/env/.env.test -f docker-compose.e2e.yaml down -v
         
 wait_container:
-	@if [ "$$CI" == "true" ]; then \
+	@if [ "$$CI" = "true" ]; then \
   		CONTAINER_NAME="avito-test_e2e_1"; \
   	else \
   	    CONTAINER_NAME="avito-test-e2e-1"; \
