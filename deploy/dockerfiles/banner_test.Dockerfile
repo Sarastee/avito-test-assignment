@@ -22,11 +22,11 @@ RUN apt-get update \
     && apt-get install -y acl
 
 COPY --from=builder /build/banner_service $APP_DIR/banner_service
-COPY --from=builder /build/deploy/scripts/prod-banner-service-start.sh $APP_DIR/prod-banner-service-start.sh
-COPY --from=builder /build/deploy/env/.env.prod $APP_DIR//deploy/env/.env.prod
+COPY --from=builder /build/deploy/scripts/test-banner-service-start.sh $APP_DIR/test-banner-service-start.sh
+COPY --from=builder /build/deploy/env/.env.test $APP_DIR//deploy/env/.env.test
 
-RUN setfacl -R -m u:web:rwx $APP_DIR/prod-banner-service-start.sh
+RUN setfacl -R -m u:web:rwx $APP_DIR/test-banner-service-start.sh
 
 USER web
 
-ENTRYPOINT ["bash", "prod-banner-service-start.sh"]
+ENTRYPOINT ["bash", "test-banner-service-start.sh"]

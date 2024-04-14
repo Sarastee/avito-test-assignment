@@ -46,5 +46,5 @@ func (i *Implementation) CreateBanner(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.SendStatus(w, http.StatusOK, model.BannerID{ID: bannerID}, i.logger)
+	response.SendStatus(w, http.StatusCreated, model.BannerID{ID: bannerID}, i.logger)
 }
