@@ -1,15 +1,12 @@
 define setup_env
-	$(eval ENV_FILE := ./deploy/env/.env.local)
+	$(eval ENV_FILE := ./deploy/env/.env.prod)
 	@echo "- setup env $(ENV_FILE)"
-	$(eval include ./deploy/env/.env.local)
+	$(eval include ./deploy/env/.env.prod)
 	$(eval export)
 endef
 
-setup-local-env:
-	$(call setup_env,local)
-
 setup-prod-env:
-	$(call setup_env,prod)
+	$(call setup_env)
 
 LOCAL_BIN:=$(CURDIR)/bin
 
@@ -21,6 +18,10 @@ app-start:
 
 app-down:
 	docker-compose --env-file deploy/env/.env.prod -f docker-compose.prod.yaml down -v
+
+app-restart:
+	make app-down
+	make app-start
 
 local-start-app:
 	docker-compose --env-file deploy/env/.env.local -f docker-compose.local.yaml up -d --build
@@ -38,17 +39,26 @@ fix-imports:
 	GOBIN=$(LOCAL_BIN) $(LOCAL_BIN)/goimports -w .
 
 test:
-	go clean -testcache
-	go test ./... -covermode count -coverpkg=github.com/sarastee/auth/internal/service/...,github.com/sarastee/auth/internal/api/... -count 5
+	docker-compose --env-file deploy/env/.env.test -f docker-compose.e2e.yaml up -d --build
+	make wait_container
+	make show_logs
+	docker-compose --env-file deploy/env/.env.test -f docker-compose.e2e.yaml down -v
+        
+wait_container:
+	@if [ "$$CI" = "true" ]; then \
+  		CONTAINER_NAME="avito-test_e2e_1"; \
+  	else \
+  	    CONTAINER_NAME="avito-test-e2e-1"; \
+	fi; \
+	docker wait "$$CONTAINER_NAME"
 
-test-coverage:
-	go clean -testcache
-	go test ./... -coverprofile=coverage.tmp.out -covermode count -coverpkg=github.com/sarastee/auth/internal/service/...,github.com/sarastee/auth/internal/api/... -count 5
-	grep -v 'mocks\|config' coverage.tmp.out  > coverage.out
-	rm coverage.tmp.out
-	go tool cover -html=coverage.out;
-	go tool cover -func=./coverage.out | grep "total";
-	grep -sqFx "/coverage.out" .gitignore || echo "/coverage.out" >> .gitignore
+show_logs:
+	@if [ "$$CI" = "true" ]; then \
+  		CONTAINER_NAME="avito-test_e2e_1"; \
+  	else \
+  	    CONTAINER_NAME="avito-test-e2e-1"; \
+	fi; \
+	docker logs "$$CONTAINER_NAME"
 
 install-deps:
 	GOBIN=$(LOCAL_BIN) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.57.2
@@ -67,19 +77,3 @@ migration-down:
 
 create-migration:
 	GOBIN=$(LOCAL_BIN) $(LOCAL_BIN)/goose -dir ${CUR_MIGRATION_DIR} create testdata sql
-
-local-create-new-migration: setup-local-env create-migration
-
-local-migration-status: setup-local-env migration-status
-
-local-migration-up: setup-local-env migration-up
-
-local-migration-down: setup-local-env migration-down
-
-prod-migration-status: setup-prod-env migration-status
-
-prod-migration-up: setup-prod-env migration-up
-
-prod-migration-down: setup-prod-env migration-down
-
-local-create-new-migration: setup-local-env create-migration

@@ -1,0 +1,62 @@
+version: '3'
+
+volumes:
+  postgres_volume:
+
+services:
+  storage:
+    image: postgres:16.1
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    env_file:
+      - deploy/env/.env.test
+    ports:
+      - "${PG_PORT}:${PG_PORT}"
+    command: -p ${PG_PORT}
+
+  redis:
+    image: redis:7.2.4
+    restart: always
+    env_file:
+      - deploy/env/.env.test
+    expose:
+      - "${REDIS_PORT}"
+    command: --port ${REDIS_PORT}
+
+
+  migrator:
+    build:
+      context: .
+      dockerfile: deploy/dockerfiles/migrator.Dockerfile
+    env_file:
+      - deploy/env/.env.test
+    depends_on:
+      - storage
+    environment:
+      PG_HOST: storage
+
+  app:
+    build:
+      context: .
+      dockerfile: deploy/dockerfiles/banner_test.Dockerfile
+    env_file:
+      - deploy/env/.env.test
+    depends_on:
+      - storage
+      - redis
+    environment:
+      PG_HOST: storage
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+    restart: on-failure
+
+  e2e:
+    build:
+      context: .
+      dockerfile: deploy/dockerfiles/test.Dockerfile
+    depends_on:
+      - app
+    environment:
+      HTTP_HOST: app
+      HTTP_PORT: "${HTTP_PORT}"
+    command: ["go", "test", "-tags", "e2e", "./...", "-count=1"]

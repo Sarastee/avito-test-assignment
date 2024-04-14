@@ -66,7 +66,6 @@ func (i *Implementation) GetUserBanner(w http.ResponseWriter, r *http.Request) {
 			i.logger.Info().Msg(err.Error())
 		} else {
 			i.logger.Info().Msg("cache found")
-			err = i.bannerCacheService.SetCache(r.Context(), *featureID, *tagID, nullRevisionID, json.RawMessage(banner))
 			if err != nil {
 				i.logger.Error().Msg(err.Error())
 			}

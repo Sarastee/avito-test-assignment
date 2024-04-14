@@ -9,6 +9,8 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - uses: actions/checkout@v3
 
@@ -22,7 +24,7 @@ jobs:
         run: go build -o ./bin/ -v ./...
 
       - name: Test
-        run: go test -v ./...
+        run: make test
 
   linter:
     name: lint
