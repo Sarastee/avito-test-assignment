@@ -62,7 +62,7 @@ func sendRequest(t *testing.T, client *http.Client, req *http.Request, expectedS
 		err = json.NewDecoder(resp.Body).Decode(respBody)
 		require.NoError(t, err)
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint
 }
 
 func TestCreateUser(t *testing.T) {
