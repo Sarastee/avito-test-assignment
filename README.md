@@ -19,7 +19,7 @@ cd avito-test-assignment
 2. Запустить контейнеры используя `Makefile`:
 
 ```bash
-make app-down
+make app-start
 ```   
    
 Эти действия запустят контейнеры PostgreSQL, Redis, Migrator и App.
@@ -27,7 +27,7 @@ make app-down
 3. Чтобы остановить приложения и схлопнуть контейнеры выполнить команду в `Makefile`:
 
 ```bash
-make make-down
+make app-down
 ```
 ### Приложение поднимается через docker-compose:
   1. Стартует контейнер PostgreSQL
