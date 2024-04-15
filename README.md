@@ -41,7 +41,7 @@ make make-down
 
 Для запуска тестов нужно выполнить команду в `Makefile`:
 ```bash
-make tests
+make test
 ```
 ### Swagger
 Так же для удобства отладки был поднят Swagger сервер.
