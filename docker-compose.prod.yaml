@@ -47,4 +47,5 @@ services:
       PG_HOST: storage
     ports:
       - "${HTTP_PORT}:${HTTP_PORT}"
+      - "${SWAGGER_PORT}:${SWAGGER_PORT}"
     restart: on-failure

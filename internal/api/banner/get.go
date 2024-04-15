@@ -12,7 +12,28 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// GetUserBanner is API layer function which process the request and pull out banner from database
+// GetUserBanner ...
+//
+// @Summary Get banner by id
+// @Security AdminToken
+// @Security UserToken
+// @Description API layer function which process the request and pull out banner from database
+// @Tags Get User Banner
+//
+// @Param Content-Type header string true "Content Type" default(application/json)
+// @Param tag_id query integer true "Tag ID"
+// @Param feature_id query integer true "Feature ID"
+// @Param revision_id query integer false "Revision ID"
+// @Param use_last_revision query boolean false "Use last revision"
+// @Produce json
+//
+// @Success 200 {object} any "Banner in JSON format"
+// @Failure 400 {object} model.Error "Incorrect provided data"
+// @Failure 401 {object} model.Error "User not authorized"
+// @Failure 403 {object} model.Error "User insufficient rights"
+// @Failure 404 {object} model.Error "Banner not found"
+// @Failure 500 {object} model.Error "Internal server error"
+// @Router /user_banner [get]
 func (i *Implementation) GetUserBanner(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()
@@ -86,11 +107,11 @@ func (i *Implementation) GetUserBanner(w http.ResponseWriter, r *http.Request) {
 			response.SendError(w, http.StatusInternalServerError, api.ErrInternalError, i.logger)
 			return
 		}
-		err = i.bannerCacheService.SetCache(r.Context(), *featureID, *tagID, nullRevisionID, json.RawMessage(banner))
+		err = i.bannerCacheService.SetCache(r.Context(), *featureID, *tagID, nullRevisionID, banner)
 		if err != nil {
 			i.logger.Error().Msg(err.Error())
 		}
-		response.SendStatus(w, http.StatusOK, json.RawMessage(banner), i.logger)
+		response.SendStatus(w, http.StatusOK, banner, i.logger)
 	}
 
 }

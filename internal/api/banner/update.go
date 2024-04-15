@@ -13,7 +13,24 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// UpdateBanner is API layer function which process the request and updates banner
+// UpdateBanner ...
+//
+// @Summary Updates banner by id
+// @Security AdminToken
+// @Description API layer function which process the request and updates banner
+// @Tags Banners
+// @Param id path integer true "Banner ID"
+// @Param request body model.UpdateBanner true "Banner update data"
+// @Accept json
+// @Produce json
+// @Success 200 "Banner successfully updated"
+// @Failure 400 {object} model.Error "Incorrect provided data"
+// @Failure 401 {object} model.Error "User not authorized"
+// @Failure 403 {object} model.Error "User insufficient rights"
+// @Failure 404 {object} model.Error "Banner not found"
+// @Failure 409 {object} model.Error "Banner with provided params already exists"
+// @Failure 500 {object} model.Error "Internal server error"
+// @Router /banner/{id} [patch]
 func (i *Implementation) UpdateBanner(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()

@@ -19,7 +19,6 @@ const (
 
 	bannerRevisionsTable = "banner_revisions"
 	contentColumn        = "content"
-	revisionIDColumn     = "revision_id"
 )
 
 var _ repository.BannerRepository = (*Repo)(nil)

@@ -1,0 +1,414 @@
+basePath: /
+definitions:
+  model.AuthUser:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  model.Banner:
+    properties:
+      banner_id:
+        type: integer
+      created_at:
+        type: string
+      feature_id:
+        type: integer
+      is_active:
+        type: boolean
+      revisions:
+        type: object
+      tag_ids:
+        items:
+          type: integer
+        type: array
+      updated_at:
+        type: string
+    type: object
+  model.BannerID:
+    properties:
+      banner_id:
+        type: integer
+    type: object
+  model.CreateBanner:
+    properties:
+      content:
+        type: object
+      feature_id:
+        type: integer
+      is_active:
+        type: boolean
+      tag_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  model.CreateUser:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    type: object
+  model.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  model.Token:
+    properties:
+      token:
+        type: string
+    type: object
+  model.UpdateBanner:
+    properties:
+      content:
+        type: object
+      feature_id:
+        type: integer
+      is_active:
+        type: boolean
+      tag_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+host: localhost:8082
+info:
+  contact:
+    email: ilja.sarasti@mail.ru
+    name: Ilya Lyakhov
+  description: Сервис для управления баннерами
+  title: Banner Service
+  version: 1.0.0
+paths:
+  /banner:
+    get:
+      description: API layer function which process the request and pull out banners
+        from database
+      parameters:
+      - description: Tag ID
+        in: query
+        name: tag_id
+        type: integer
+      - description: Feature ID
+        in: query
+        name: feature_id
+        type: integer
+      - description: Revision ID
+        in: query
+        name: revision_id
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Banner array in JSON format
+          schema:
+            items:
+              $ref: '#/definitions/model.Banner'
+            type: array
+        "400":
+          description: Incorrect provided data
+          schema:
+            $ref: '#/definitions/model.Error'
+        "401":
+          description: User not authorized
+          schema:
+            $ref: '#/definitions/model.Error'
+        "403":
+          description: User insufficient rights
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.Error'
+      security:
+      - AdminToken: []
+      summary: Updates banner by id
+      tags:
+      - Banners
+    post:
+      consumes:
+      - application/json
+      description: API layer function which process the request and creates banner
+      parameters:
+      - description: Banner create params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateBanner'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Banner successfully created
+          schema:
+            $ref: '#/definitions/model.BannerID'
+        "400":
+          description: Incorrect provided data
+          schema:
+            $ref: '#/definitions/model.Error'
+        "401":
+          description: User not authorized
+          schema:
+            $ref: '#/definitions/model.Error'
+        "403":
+          description: User insufficient rights
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.Error'
+      security:
+      - AdminToken: []
+      summary: Creates new banner
+      tags:
+      - Banners
+  /banner/{id}:
+    delete:
+      description: API layer function which process the request and deletes banner
+      parameters:
+      - description: Banner ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Banner successfully deleted
+        "400":
+          description: Incorrect provided data
+          schema:
+            $ref: '#/definitions/model.Error'
+        "401":
+          description: User not authorized
+          schema:
+            $ref: '#/definitions/model.Error'
+        "403":
+          description: User insufficient rights
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: Banner not found
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.Error'
+      security:
+      - AdminToken: []
+      summary: Deletes banner by id
+      tags:
+      - Banners
+    patch:
+      consumes:
+      - application/json
+      description: API layer function which process the request and updates banner
+      parameters:
+      - description: Banner ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Banner update data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateBanner'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Banner successfully updated
+        "400":
+          description: Incorrect provided data
+          schema:
+            $ref: '#/definitions/model.Error'
+        "401":
+          description: User not authorized
+          schema:
+            $ref: '#/definitions/model.Error'
+        "403":
+          description: User insufficient rights
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: Banner not found
+          schema:
+            $ref: '#/definitions/model.Error'
+        "409":
+          description: Banner with provided params already exists
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.Error'
+      security:
+      - AdminToken: []
+      summary: Updates banner by id
+      tags:
+      - Banners
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: API layer function which process the request and login user
+      parameters:
+      - description: Login user params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AuthUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User has successfully logged in
+          schema:
+            $ref: '#/definitions/model.Token'
+        "400":
+          description: Incorrect provided data
+          schema:
+            $ref: '#/definitions/model.Error'
+        "401":
+          description: Incorrect password
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: User login
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Creates new user by provided name, password and role
+      parameters:
+      - description: New User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User successfully created
+          schema:
+            $ref: '#/definitions/model.Token'
+        "400":
+          description: Incorrect provided data
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: New user create
+      tags:
+      - Auth
+  /user_banner:
+    get:
+      description: API layer function which process the request and pull out banner
+        from database
+      parameters:
+      - default: application/json
+        description: Content Type
+        in: header
+        name: Content-Type
+        required: true
+        type: string
+      - description: Tag ID
+        in: query
+        name: tag_id
+        required: true
+        type: integer
+      - description: Feature ID
+        in: query
+        name: feature_id
+        required: true
+        type: integer
+      - description: Revision ID
+        in: query
+        name: revision_id
+        type: integer
+      - description: Use last revision
+        in: query
+        name: use_last_revision
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Banner in JSON format
+          schema:
+            type: object
+        "400":
+          description: Incorrect provided data
+          schema:
+            $ref: '#/definitions/model.Error'
+        "401":
+          description: User not authorized
+          schema:
+            $ref: '#/definitions/model.Error'
+        "403":
+          description: User insufficient rights
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: Banner not found
+          schema:
+            $ref: '#/definitions/model.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.Error'
+      security:
+      - AdminToken: []
+      - UserToken: []
+      summary: Get banner by id
+      tags:
+      - Get User Banner
+schemes:
+- http
+securityDefinitions:
+  AdminToken:
+    description: Admin access token
+    in: header
+    name: token
+    type: apiKey
+  UserToken:
+    description: User access token
+    in: header
+    name: token
+    type: apiKey
+swagger: "2.0"

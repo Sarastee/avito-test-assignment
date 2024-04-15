@@ -11,16 +11,16 @@ const (
 	passwordSalt = "PASSWORD_SALT"
 )
 
-// PasswordConfigSearcher password config searcher
-type PasswordConfigSearcher struct{}
+// PasswordCfgSearcher password config searcher
+type PasswordCfgSearcher struct{}
 
-// NewPasswordConfigSearcher get instance for password config searcher.
-func NewPasswordConfigSearcher() *PasswordConfigSearcher {
-	return &PasswordConfigSearcher{}
+// NewPasswordCfgSearcher get instance for password config searcher.
+func NewPasswordCfgSearcher() *PasswordCfgSearcher {
+	return &PasswordCfgSearcher{}
 }
 
 // Get config for password
-func (p *PasswordConfigSearcher) Get() (*config.PasswordConfig, error) {
+func (p *PasswordCfgSearcher) Get() (*config.PasswordConfig, error) {
 	salt := os.Getenv(passwordSalt)
 	if len(salt) == 0 {
 		return nil, errors.New("salt for password not found")

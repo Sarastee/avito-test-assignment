@@ -11,7 +11,21 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// CreateBanner is API layer function which process the request and creates banner
+// CreateBanner ...
+//
+// @Summary Creates new banner
+// @Security AdminToken
+// @Description API layer function which process the request and creates banner
+// @Tags Banners
+// @Param request body model.CreateBanner true "Banner create params"
+// @Accept json
+// @Produce json
+// @Success 201 {object} model.BannerID "Banner successfully created"
+// @Failure 400 {object} model.Error "Incorrect provided data"
+// @Failure 401 {object} model.Error "User not authorized"
+// @Failure 403 {object} model.Error "User insufficient rights"
+// @Failure 500 {object} model.Error "Internal server error"
+// @Router /banner [post]
 func (i *Implementation) CreateBanner(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()

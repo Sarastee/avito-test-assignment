@@ -12,7 +12,20 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// LogIn is API layer function which process the request and login user
+// LogIn ...
+//
+// @Summary User login
+// @Description API layer function which process the request and login user
+// @Tags Auth
+// @Param request body model.AuthUser true "Login user params"
+// @Accept json
+// @Produce json
+// @Success 200 {object} model.Token "User has successfully logged in"
+// @Failure 400 {object} model.Error "Incorrect provided data"
+// @Failure 401 {object} model.Error "Incorrect password"
+// @Failure 404 {object} model.Error "User not found"
+// @Failure 500 {object} model.Error "Internal server error"
+// @Router /login [post]
 func (i *Implementation) LogIn(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()
