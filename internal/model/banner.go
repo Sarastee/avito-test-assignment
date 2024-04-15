@@ -14,7 +14,7 @@ type CreateBanner struct {
 	IsActive  bool            `json:"is_active"`
 	FeatureID int64           `json:"feature_id"`
 	TagsIDs   []int64         `json:"tag_ids"`
-	Content   json.RawMessage `json:"content"`
+	Content   json.RawMessage `json:"content" swaggertype:"object" additionalProperties:"true"`
 }
 
 // UpdateBanner model struct
@@ -22,7 +22,7 @@ type UpdateBanner struct {
 	IsActive  *bool            `json:"is_active,omitempty"`
 	FeatureID *int64           `json:"feature_id,omitempty"`
 	TagIDs    *[]int64         `json:"tag_ids,omitempty"`
-	Content   *json.RawMessage `json:"content,omitempty"`
+	Content   *json.RawMessage `json:"content,omitempty" swaggertype:"object" additionalProperties:"true"`
 }
 
 // UpdateBannerSQL model struct
@@ -40,7 +40,7 @@ type BannerID struct {
 
 // Content model struct
 type Content struct {
-	Content   json.RawMessage `json:"content"`
+	Content   json.RawMessage `json:"content" swaggertype:"object" additionalProperties:"true"`
 	Revision  int64           `json:"revision_id"`
 	CreatedAt time.Time       `json:"created_at"`
 }
@@ -53,7 +53,7 @@ type Banner struct {
 	TagIDs    []int64   `json:"tag_ids"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	Revisions []Content `json:"revisions"`
+	Revisions []Content `json:"revisions" swaggertype:"object" additionalProperties:"true"`
 }
 
 // BannerInfo model struct

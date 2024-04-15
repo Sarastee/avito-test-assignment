@@ -21,7 +21,7 @@ type BannerService interface {
 	DeleteBanner(ctx context.Context, bannerID int64) error
 
 	GetAdminBanners(ctx context.Context, featureID sql.NullInt64, tagID sql.NullInt64, offset sql.NullInt64, limit sql.NullInt64) ([]model.Banner, error)
-	GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, revisionID sql.NullInt64) (string, error)
+	GetBannerFromDatabase(ctx context.Context, tagID int64, featureID int64, revisionID sql.NullInt64) (json.RawMessage, error)
 }
 
 // JWTService interface for service layer

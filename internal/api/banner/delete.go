@@ -11,7 +11,21 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// DeleteBanner is API layer function which process the request and deletes banner
+// DeleteBanner
+//
+// @Summary Deletes banner by id
+// @Security AdminToken
+// @Description API layer function which process the request and deletes banner
+// @Tags Banners
+// @Param id path integer true "Banner ID"
+// @Produce json
+// @Success 204 "Banner successfully deleted"
+// @Failure 400 {object} model.Error "Incorrect provided data"
+// @Failure 401 {object} model.Error "User not authorized"
+// @Failure 403 {object} model.Error "User insufficient rights"
+// @Failure 404 {object} model.Error "Banner not found"
+// @Failure 500 {object} model.Error "Internal server error"
+// @Router /banner/{id} [delete]
 func (i *Implementation) DeleteBanner(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := r.Body.Close()

@@ -2,16 +2,11 @@ package response
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/rs/zerolog"
 	"github.com/sarastee/avito-test-assignment/internal/model"
 )
-
-const errMsgJSErr = "http: request method or response status code does not allow body"
-
-var errJSErr = errors.New(errMsgJSErr)
 
 // SendStatus function which sends status with provided code and data
 func SendStatus(w http.ResponseWriter, code int, data any, logger *zerolog.Logger) {
@@ -20,9 +15,9 @@ func SendStatus(w http.ResponseWriter, code int, data any, logger *zerolog.Logge
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(code)
 
-	if rErr := json.NewEncoder(w).Encode(data); rErr != nil {
-		if !errors.Is(rErr, errJSErr) {
-			logger.Warn().Err(rErr).Msgf("error while sending response with status code: %d", code)
+	if data != nil {
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			logger.Warn().Err(err).Msgf("error while sending response with status code: %d", code)
 		}
 	}
 }

@@ -39,6 +39,10 @@ type HTTPConfigSearcher interface {
 	Get() (*HTTPConfig, error)
 }
 
+type SwaggerConfigSearcher interface {
+	Get() (*SwaggerConfig, error)
+}
+
 // Load dotenv from path to env
 func Load(path string) error {
 	err := godotenv.Load(path)
@@ -104,5 +108,15 @@ type HTTPConfig struct {
 
 // Address get address from config
 func (cfg *HTTPConfig) Address() string {
+	return net.JoinHostPort(cfg.Host, cfg.Port)
+}
+
+// SwaggerConfig is config for Swagger
+type SwaggerConfig struct {
+	Host string
+	Port string
+}
+
+func (cfg *SwaggerConfig) Address() string {
 	return net.JoinHostPort(cfg.Host, cfg.Port)
 }

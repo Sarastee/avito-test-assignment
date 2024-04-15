@@ -37,6 +37,7 @@ type serviceProvider struct {
 	pgConfig       *config.PgConfig
 	redisConfig    *config.RedisConfig
 	httpConfig     *config.HTTPConfig
+	swaggerConfig  *config.SwaggerConfig
 	passwordConfig *config.PasswordConfig
 	jwtConfig      *config.JWTConfig
 
@@ -119,7 +120,7 @@ func (s *serviceProvider) HTTPConfig() *config.HTTPConfig {
 
 func (s *serviceProvider) PasswordConfig() *config.PasswordConfig {
 	if s.passwordConfig == nil {
-		cfgSearcher := env.NewPasswordConfigSearcher()
+		cfgSearcher := env.NewPasswordCfgSearcher()
 		cfg, err := cfgSearcher.Get()
 		if err != nil {
 			log.Fatalf("unable to get Password config: %s", err.Error())
@@ -133,7 +134,7 @@ func (s *serviceProvider) PasswordConfig() *config.PasswordConfig {
 
 func (s *serviceProvider) JWTConfig() *config.JWTConfig {
 	if s.jwtConfig == nil {
-		cfgSearcher := env.NewJWTConfigSearcher()
+		cfgSearcher := env.NewJWTCfgSearcher()
 		cfg, err := cfgSearcher.Get()
 		if err != nil {
 			log.Fatalf("unable to get JWT config: %s", err.Error())
@@ -157,6 +158,21 @@ func (s *serviceProvider) RedisConfig() *config.RedisConfig {
 	}
 
 	return s.redisConfig
+}
+
+// SwaggerConfig ...
+func (s *serviceProvider) SwaggerConfig() *config.SwaggerConfig {
+	if s.swaggerConfig == nil {
+		cfgSearcher := env.NewSwaggerCfgSearcher()
+		cfg, err := cfgSearcher.Get()
+		if err != nil {
+			log.Fatalf("unable to get Swagger config: %s", err.Error())
+		}
+
+		s.swaggerConfig = cfg
+	}
+
+	return s.swaggerConfig
 }
 
 // DBClient ...

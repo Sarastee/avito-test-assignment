@@ -23,20 +23,26 @@ app-restart:
 	make app-down
 	make app-start
 
-local-start-app:
+local-db-start:
 	docker-compose --env-file deploy/env/.env.local -f docker-compose.local.yaml up -d --build
 
-local-down-app:
+local-db-down:
 	docker-compose --env-file deploy/env/.env.local -f docker-compose.local.yaml down -v
 
 local-app-start:
-	go run ./cmd/grpc_server/main.go --config=./deploy/env/.env.local
+	go run ./cmd/service/main.go --config=./deploy/env/.env.local
 
 lint:
 	GOBIN=$(LOCAL_BIN) $(LOCAL_BIN)/golangci-lint run ./... --config .golangci.pipeline.yaml
 
 fix-imports:
 	GOBIN=$(LOCAL_BIN) $(LOCAL_BIN)/goimports -w .
+
+swagger:
+	mkdir -p pkg/swagger
+	GOBIN=$(LOCAL_BIN) $(LOCAL_BIN)/swag init -g ./cmd/service/main.go -o ./pkg/swagger
+	$(LOCAL_BIN)/statik -src=pkg/swagger/ -include='*.css,*.html,*.js,*.json,*.png'
+
 
 test:
 	docker-compose --env-file deploy/env/.env.test -f docker-compose.e2e.yaml up -d --build
@@ -65,6 +71,8 @@ install-deps:
 	GOBIN=$(LOCAL_BIN) go install golang.org/x/tools/cmd/goimports@v0.18.0
 	GOBIN=$(LOCAL_BIN) go install github.com/pressly/goose/v3/cmd/goose@v3.14.0
 	GOBIN=$(LOCAL_BIN) go install github.com/vektra/mockery/v2@latest
+	GOBIN=$(LOCAL_BIN) go install github.com/swaggo/swag/cmd/swag@latest
+	GOBIN=$(LOCAL_BIN) go install github.com/rakyll/statik@v0.1.7
 
 migration-status:
 	GOBIN=$(LOCAL_BIN) $(LOCAL_BIN)/goose -dir ${CUR_MIGRATION_DIR} postgres ${MIGRATION_DSN} status -v

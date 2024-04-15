@@ -14,16 +14,16 @@ const (
 	jwtAccessExpireEnvName = "JWT_ACCESS_TOKEN_EXPIRES_MIN"
 )
 
-// JWTConfigSearcher JWT config searcher
-type JWTConfigSearcher struct{}
+// JWTCfgSearcher JWT config searcher
+type JWTCfgSearcher struct{}
 
-// NewJWTConfigSearcher get instance for JWT config searcher
-func NewJWTConfigSearcher() *JWTConfigSearcher {
-	return &JWTConfigSearcher{}
+// NewJWTCfgSearcher get instance for JWT config searcher
+func NewJWTCfgSearcher() *JWTCfgSearcher {
+	return &JWTCfgSearcher{}
 }
 
 // Get config for JWT.
-func (j *JWTConfigSearcher) Get() (*config.JWTConfig, error) {
+func (j *JWTCfgSearcher) Get() (*config.JWTConfig, error) {
 	jwtSecret := os.Getenv(jwtKeyEnvName)
 	if len(jwtSecret) == 0 {
 		return nil, errors.New("secret for JWT not found")
