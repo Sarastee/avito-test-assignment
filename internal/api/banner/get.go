@@ -12,7 +12,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// GetUserBanner
+// GetUserBanner ...
 //
 // @Summary Get banner by id
 // @Security AdminToken

@@ -11,7 +11,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// CreateBanner
+// CreateBanner ...
 //
 // @Summary Creates new banner
 // @Security AdminToken

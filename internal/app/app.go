@@ -11,7 +11,7 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/rs/cors"
 	"github.com/sarastee/avito-test-assignment/internal/config"
-	_ "github.com/sarastee/avito-test-assignment/statik"
+	_ "github.com/sarastee/avito-test-assignment/statik" //nolint
 	"github.com/sarastee/platform_common/pkg/closer"
 )
 
@@ -173,7 +173,7 @@ func (a *App) runSwaggerServer() error {
 }
 
 func serveSwaggerFile(path string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, _ *http.Request) {
 		log.Printf("Serving swagger file: %s", path)
 
 		statikFs, err := fs.New()

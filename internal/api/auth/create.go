@@ -12,7 +12,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// CreateUser
+// CreateUser ...
 //
 // @Summary New user create
 // @Description Creates new user by provided name, password and role

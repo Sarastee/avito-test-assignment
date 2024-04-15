@@ -13,7 +13,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// UpdateBanner
+// UpdateBanner ...
 //
 // @Summary Updates banner by id
 // @Security AdminToken

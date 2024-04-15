@@ -12,7 +12,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// LogIn
+// LogIn ...
 //
 // @Summary User login
 // @Description API layer function which process the request and login user

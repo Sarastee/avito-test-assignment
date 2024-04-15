@@ -39,6 +39,7 @@ type HTTPConfigSearcher interface {
 	Get() (*HTTPConfig, error)
 }
 
+// SwaggerConfigSearcher interface for search Swagger
 type SwaggerConfigSearcher interface {
 	Get() (*SwaggerConfig, error)
 }
@@ -117,6 +118,7 @@ type SwaggerConfig struct {
 	Port string
 }
 
+// Address get address from config
 func (cfg *SwaggerConfig) Address() string {
 	return net.JoinHostPort(cfg.Host, cfg.Port)
 }

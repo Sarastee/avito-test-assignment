@@ -53,12 +53,18 @@ func (r *Repo) GetBannerFromDatabase(ctx context.Context, tagID int64, featureID
 			&bannerContent.CreatedAt,
 			&bannerContent.Content,
 		)
+		if err != nil {
+			return "", err
+		}
 	}
 	if !hasRows {
 		return "", repository.ErrBannerNotFound
 	}
 
 	jsonContent, err := json.Marshal(bannerContent)
+	if err != nil {
+		return "", err
+	}
 
 	return string(jsonContent), nil
 }

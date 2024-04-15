@@ -9,7 +9,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// GetAdminBanners
+// GetAdminBanners ...
 //
 // @Summary Updates banner by id
 // @Security AdminToken

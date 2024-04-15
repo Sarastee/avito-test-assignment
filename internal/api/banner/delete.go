@@ -11,7 +11,7 @@ import (
 	"github.com/sarastee/avito-test-assignment/internal/utils/validator"
 )
 
-// DeleteBanner
+// DeleteBanner ...
 //
 // @Summary Deletes banner by id
 // @Security AdminToken
